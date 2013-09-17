@@ -38,19 +38,23 @@ void PhysicsCore::CollisionMaskLayers()
 
 void PhysicsCore::GetVelocity()
 {
+  return Velocity;
 }
 
 
-void PhysicsCore::SetVelocity()
+void PhysicsCore::SetVelocity(int Vel)
 {
+  Velocity = Vel;
 }
 
 
 void PhysicsCore::GetAcceleration()
 {
+  return Acceleration;
 }
 
 
-void PhysicsCore::SetAcceleration()
+void PhysicsCore::SetAcceleration(int Accel)
 {
+  Acceleration = Accel;
 }
