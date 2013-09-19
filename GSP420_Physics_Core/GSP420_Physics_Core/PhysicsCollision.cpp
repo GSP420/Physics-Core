@@ -16,7 +16,7 @@ void PhysicsCollision::ContinuousCollisionDetection()
 }
 
 
-bool PhysicsCollision::CollisionDetection(shapeOne, shapeTwo)
+bool PhysicsCollision::CollisionDetection(AABB shapeOne, AABB shapeTwo)
 {
 	/******************************************************
 	*	Function Name:		CollisionDetection()
@@ -30,16 +30,31 @@ bool PhysicsCollision::CollisionDetection(shapeOne, shapeTwo)
 	*
 	******************************************************/
 
-
-	//Create a line between the minimum x and the maximum x of each shape
-	//example:
-	//lineA = (shapeOne.X_min, 0) to (shapeOne.X_max, 0)
-	//lineB = (shapeTwo.X_min, 0) to (shapeTwo.X_max, 0)
-
-	//Create a line between the minimum y and the maximum y of each shape
-	//example:
-	//lineC = (0, shapeOne.Y_min) to (0, shapeOne.Y_max)
-	//lineD = (0, shapeTwo.Y_min) to (0, shapeTwo.Y_max)
-
-	//Check for overlap (if overlap between lines on both axes is found, then the shapes are colliding)
+	//Test shape projections along each axes for overlap. Function can exit as soon as a disjoint (non intersecting) projection is found
+	if(shapeOne.maxPoint.x < shapeTwo.minPoint.x || shapeTwo.maxPoint.x < shapeOne.minPoint.x)
+	{
+		//The shapes' projections along the x-axis are disjoint, so the shapes are not colliding
+		return False;
+	}
+	else
+	{
+		if(shapeOne.maxPoint.y < shapeTwo.minPoint.y || shapeTwo.maxPoint.y < shapeOne.minPoint.y)
+		{
+			//The shapes' projection along the y-axis are disjoint, so the shapes are not colliding
+			return False;
+		}
+		else
+		{
+			if(shapeOne.maxPoint.z < shapeTwo.minPoint.z || shapeTwo.maxPoint.z < shapeOne.minPoint.z)
+			{
+				//The shapes' projection along the z-axis are disjoint, so the shapes are not colliding
+				return False;
+			}
+			else
+			{
+				//The shapes' projection along all three axes are intersecting, so the shapes ARE colliding
+				return True;
+			}
+		}
+	}	
 }
