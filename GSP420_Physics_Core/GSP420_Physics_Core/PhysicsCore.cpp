@@ -42,7 +42,7 @@ void PhysicsCore::GetVelocity()
 }
 
 
-void PhysicsCore::SetVelocity(int Vel)
+void PhysicsCore::SetVelocity(double Vel)
 {
   Velocity = Vel;
 }
@@ -54,7 +54,7 @@ void PhysicsCore::GetAcceleration()
 }
 
 
-void PhysicsCore::SetAcceleration(int Accel)
+void PhysicsCore::SetAcceleration(double Accel)
 {
   Acceleration = Accel;
 }
