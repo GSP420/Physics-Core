@@ -30,10 +30,10 @@ public:
 	void SpatialPartitioning();
 	void RayCast();
 	void CollisionMaskLayers();
-	void GetVelocity();
-	void SetVelocity();
-	void GetAcceleration();
-	void SetAcceleration();
+	double GetVelocity();
+	void SetVelocity(double vel);
+	double GetAcceleration();
+	void SetAcceleration(double accel);
 
 	/*************************************************************
 	*struct: AABB 

@@ -11,11 +11,6 @@ PhysicsCore::~PhysicsCore(void)
 }
 
 
-void PhysicsCore::CreateAABB()
-{
-}
-
-
 void PhysicsCore::Accelerate()
 {
 }
@@ -36,25 +31,25 @@ void PhysicsCore::CollisionMaskLayers()
 }
 
 
-void PhysicsCore::GetVelocity()
+double PhysicsCore::GetVelocity()
 {
-  return Velocity;
+  return velocity;
 }
 
 
 void PhysicsCore::SetVelocity(double Vel)
 {
-  Velocity = Vel;
+  velocity = Vel;
 }
 
 
-void PhysicsCore::GetAcceleration()
+double PhysicsCore::GetAcceleration()
 {
-  return Acceleration;
+  return acceleration;
 }
 
 
 void PhysicsCore::SetAcceleration(double Accel)
 {
-  Acceleration = Accel;
+  acceleration = Accel;
 }
