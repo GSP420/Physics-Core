@@ -16,7 +16,7 @@ void PhysicsCollision::ContinuousCollisionDetection()
 }
 
 
-bool PhysicsCollision::CollisionDetection(AABB shapeOne, AABB shapeTwo)
+bool PhysicsCollision::CollisionDetection(AABB shapeOne, AABB shapeTwo, bool test_z_axis)
 {
 	/******************************************************
 	*	Function Name:		CollisionDetection()
@@ -45,14 +45,23 @@ bool PhysicsCollision::CollisionDetection(AABB shapeOne, AABB shapeTwo)
 		}
 		else
 		{
-			if(shapeOne.maxPoint.z < shapeTwo.minPoint.z || shapeTwo.maxPoint.z < shapeOne.minPoint.z)
+			if(test_z_axis)
 			{
-				//The shapes' projection along the z-axis are disjoint, so the shapes are not colliding
-				return False;
+				//Collision detection along z axis is desired, so test the third axis for intersection:
+				if(shapeOne.maxPoint.z < shapeTwo.minPoint.z || shapeTwo.maxPoint.z < shapeOne.minPoint.z)
+				{
+					//The shapes' projection along the z-axis are disjoint, so the shapes are not colliding
+					return False;
+				}
+				else
+				{
+					//The shapes' projection along all three axes are intersecting, so the shapes ARE colliding
+					return True;
+				}
 			}
 			else
 			{
-				//The shapes' projection along all three axes are intersecting, so the shapes ARE colliding
+				//Collision detection along z axis is NOT desired, and the shapes' projections along both the x and y axes are intersecting, so the shapes ARE colliding
 				return True;
 			}
 		}

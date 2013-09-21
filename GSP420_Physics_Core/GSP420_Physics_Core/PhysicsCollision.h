@@ -6,6 +6,6 @@ public:
 	~PhysicsCollision(void);
 
 	void ContinuousCollisionDetection();
-	void CollisionDetection();
+	bool CollisionDetection(AABB shapeOne, AABB shapeTwo, bool test_z_axis);
 };
 
