@@ -28,7 +28,7 @@ public:
 
 	void Accelerate();
 	void SpatialPartitioning();
-	void RayCast();
+	bool RayCast(D3DXVECTOR2 startPoint, D3DXVECTOR2 endPoint, list<AABB> collidables, int maxTestLimit);
 	void CollisionMaskLayers();
 	double GetVelocity();
 	void SetVelocity(double vel);
