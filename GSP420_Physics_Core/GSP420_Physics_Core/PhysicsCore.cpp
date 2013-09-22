@@ -28,13 +28,16 @@ bool PhysicsCore::RayCast(D3DXVECTOR3 startPoint, D3DXVECTOR3 directionVector, l
 	*	Programmer:			Josh Archer
 	*
 	*	Determines if an AABB in the collidables list
-	*	lies along the path of the line between
-	*	startPoint and endPoint.
+	*	intersects the ray with origin startPoint and
+	*	direction vector directionVector
 	*
-	*	Returns TRUE if a collision has occured with one
+	*	Returns TRUE if a collision has occurred with one
 	*	of the collidables,
 	*	Returns FALSE if we have reached the test limit
 	*	or if no collisions were detected
+	*
+	*	Also assigns hit information to contactOutput
+	*	if a collision has occurred.
 	******************************************************/
 
 	//Create and initialize an iterator for the collidables list.
