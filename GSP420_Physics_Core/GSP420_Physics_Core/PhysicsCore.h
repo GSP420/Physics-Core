@@ -12,6 +12,8 @@
 #include <d3dx9.h>
 #include <sstream>
 #include <list>
+#include <string>
+#include <cmath>
 
 using namespace std;
 
@@ -72,6 +74,22 @@ struct AABB
 
 	D3DXVECTOR3 minPoint;
 	D3DXVECTOR3 maxPoint;
+
+	string ID;
+};
+
+/*************************************************************
+*struct: RayCastContact 
+*Programmer: Josh Archer
+*Purpose: to contain contact information about a collision
+*between a ray and an AABB
+*************************************************************/
+struct RayCastContact
+{
+	D3DXVECTOR3 t_min;
+	D3DXVECTOR3 t_max;
+
+	string collidable_ID;
 };
 
 class PhysicsCore
@@ -90,7 +108,7 @@ public:
 
 	void Accelerate();
 	void SpatialPartitioning();
-	bool RayCast(D3DXVECTOR2 startPoint, D3DXVECTOR2 endPoint, list<AABB> collidables, int maxTestLimit);
+	bool RayCast(D3DXVECTOR3 startPoint, D3DXVECTOR3 directionVector, list<AABB> collidables, int maxTestLimit, bool test_z_axis, RayCastContact &contactOutput);
 	void CollisionMaskLayers();
 	double GetVelocity();
 	void SetVelocity(double vel);
