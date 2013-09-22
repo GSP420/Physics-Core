@@ -54,6 +54,9 @@ bool PhysicsCore::RayCast(D3DXVECTOR3 startPoint, D3DXVECTOR3 directionVector, l
 	float t1;
 	float t2;
 
+	
+	const float EPSILON = 0.00001;
+
 	//Convert the three vector components of the direction vector into normalized form
 	float dxNormal = 1.0/directionVector.x;
 	float dyNormal = 1.0/directionVector.y;
