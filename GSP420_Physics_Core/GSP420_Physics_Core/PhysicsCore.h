@@ -11,6 +11,68 @@
 #include <d3d9.h>
 #include <d3dx9.h>
 #include <sstream>
+#include <list>
+
+using namespace std;
+
+/*************************************************************
+*struct: AABB 
+*Programmer: John Berg
+*Purpose: to create an invisible box around obejcts to detect
+*collisions
+*************************************************************/
+const float INFINITY = FLT_MAX; //variable to make an infinitely small AABB
+
+struct AABB
+{
+	//initialize to an infinitely small AABB
+	AABB():	minPoint(INFINITY, INFINITY, INFINITY),
+			maxPoint(-INFINITY, -INFINITY, -INFINITY){}
+
+	//function that defines the center of the AABB
+	D3DXVECTOR3 center()const
+	{
+		return (minPoint + maxPoint) / 2.0f;
+	}
+
+	//function to define the extent(outer bounds) of the AABB
+	D3DXVECTOR3 extent()const
+	{
+		return (maxPoint - minPoint) / 2.0f;
+	}
+
+	//function that transforms the two vector3's into matrices and back
+	void transform(const D3DXMATRIX& Mat, AABB& out)
+	{
+		D3DXVECTOR3 midPoint = center();
+		D3DXVECTOR3 outerPoint = extent();
+
+		//tranform center to matrix Mat
+		D3DXVec3TransformCoord(&midPoint, &midPoint, &Mat);
+
+		//now transform extent into another matrix
+		D3DXMATRIX absMat;
+		D3DXMatrixIdentity(&absMat);
+			
+		//set each position of absMat to the absolute value of the corresponding
+		//position in Mat because extent can't have negative values
+		for(int i = 0; i < 2; i++)
+		{
+			for(int j = 0; j < 2; j++)
+			{
+				absMat(i, j) = fabsf(Mat(i, j));
+			}
+		}
+		D3DXVec3TransformNormal(&outerPoint, &outerPoint, &absMat);
+
+		//convert back to two vectors
+		out.minPoint = midPoint - outerPoint;
+		out.maxPoint = midPoint + outerPoint;
+	}
+
+	D3DXVECTOR3 minPoint;
+	D3DXVECTOR3 maxPoint;
+};
 
 class PhysicsCore
 {
@@ -34,64 +96,5 @@ public:
 	void SetVelocity(double vel);
 	double GetAcceleration();
 	void SetAcceleration(double accel);
-
-	/*************************************************************
-	*struct: AABB 
-	*Programmer: John Berg
-	*Purpose: to create an invisible box around obejcts to detect
-	*collisions
-	*************************************************************/
-	const float INFINITY = FLT_MAX; //variable to make an infinitely small AABB
-
-	struct AABB
-	{
-		//initialize to an infinitely small AABB
-		AABB():	minPoint(INFINITY, INFINITY, INFINITY),
-				maxPoint(-INFINITY, -INFINITY, -INFINITY){}
-
-		//function that defines the center of the AABB
-		D3DXVECTOR3 center()const
-		{
-			return (minPoint + maxPoint) / 2.0f;
-		}
-
-		//function to define the extent(outer bounds) of the AABB
-		D3DXVECTOR3 extent()const
-		{
-			return (maxPoint - minPoint) / 2.0f;
-		}
-
-		//function that transforms the two vector3's into matrices and back
-		void transform(const D3DXMATRIX& Mat, AABB& out)
-		{
-			D3DXVECTOR3 midPoint = center();
-			D3DXVECTOR3 outerPoint = extent();
-
-			//tranform center to matrix Mat
-			D3DXVec3TransformCoord(&midPoint, &midPoint, &Mat);
-
-			//now transform extent into another matrix
-			D3DXMATRIX absMat;
-			D3DXMatrixIdentity(&absMat);
-			
-			//set each position of absMat to the absolute value of the corresponding
-			//position in Mat because extent can't have negative values
-			for(int i = 0; i < 2; i++)
-			{
-				for(int j = 0; j < 2; j++)
-				{
-					absMat(i, j) = fabsf(Mat(i, j));
-				}
-			}
-			D3DXVec3TransformNormal(&outerPoint, &outerPoint, &absMat);
-
-			//convert back to two vectors
-			out.minPoint = midPoint - outerPoint;
-			out.maxPoint = midPoint + outerPoint;
-		}
-
-		D3DXVECTOR3 minPoint;
-		D3DXVECTOR3 maxPoint;
-	};
 };
 
