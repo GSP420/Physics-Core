@@ -13,12 +13,12 @@ void Octree::handleBoundingBoxes(AABB* aabb, D3DXVECTOR3 pos, bool addAABB)
 	for(int x = 0; x < 2; x++) 
 	{
 		if (x == 0) {
-			if (pos[0] - aabb->extent > center[0]) 
+			if (pos[0] - aabb->extent().x > center[0]) 
 			{
 				continue;
 			}
 		}
-		else if (pos[0] + aabb->extent < center[0]) 
+		else if (pos[0] + aabb->extent().x < center[0]) 
 		{
 			continue;
 		}
@@ -26,24 +26,24 @@ void Octree::handleBoundingBoxes(AABB* aabb, D3DXVECTOR3 pos, bool addAABB)
 		for(int y = 0; y < 2; y++) 
 		{
 			if (y == 0) {
-				if (pos[1] - aabb->extent > center[1]) 
+				if (pos[1] - aabb->extent().y > center[1]) 
 				{
 					continue;
 				}
 			}
-			else if (pos[1] + aabb->extent < center[1]) 
+			else if (pos[1] + aabb->extent().y < center[1]) 
 			{
 				continue;
 			}
 					
 			for(int z = 0; z < 2; z++) {
 				if (z == 0) {
-					if (pos[2] - aabb->extent > center[2]) 
+					if (pos[2] - aabb->extent().z > center[2]) 
 					{
 						continue;
 					}
 				}
-				else if (pos[2] + aabb->extent < center[2]) 
+				else if (pos[2] + aabb->extent().z < center[2]) 
 				{
 					continue;
 				}
