@@ -73,15 +73,15 @@ bool PhysicsCore::RayCast(D3DXVECTOR3 startPoint, D3DXVECTOR3 directionVector, l
 	float t2;
 
 	
-	const float EPSILON = 0.00001;
+	const float EPSILON = 0.00001f;
 
 	//Keep track of how many times we've iterated through the collidables list
 	int numIterations = 0;
 
 	//Convert the three vector components of the direction vector into normalized form
-	float dxNormal = 1.0/directionVector.x;
-	float dyNormal = 1.0/directionVector.y;
-	float dzNormal = 1.0/directionVector.z;
+	float dxNormal = 1.0f/directionVector.x;
+	float dyNormal = 1.0f/directionVector.y;
+	float dzNormal = 1.0f/directionVector.z;
 
 	//Iterate through all collidables in the list and test for collisions along the ray
 	while(i != collidables.end())
