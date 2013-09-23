@@ -96,7 +96,7 @@ bool PhysicsCore::RayCast(D3DXVECTOR3 startPoint, D3DXVECTOR3 directionVector, l
 		tz_max = FLT_MAX;
 
 		//Reset the intersection detected toggle to TRUE
-		bool intersectionHasOccured = TRUE;
+		bool intersectionHasOccured = true;
 
 		for(int j = 0;j < 3; j++)
 		{
@@ -111,7 +111,7 @@ bool PhysicsCore::RayCast(D3DXVECTOR3 startPoint, D3DXVECTOR3 directionVector, l
 					if(startPoint.x < i->minPoint.x || startPoint.x > i->maxPoint.x)
 					{
 						//Ray is parallel to the x-axis slab and starting x-coordinate lies outside the current collidable. Therefore we aren't intersecting
-						intersectionHasOccured = FALSE;
+						intersectionHasOccured = false;
 						break;
 					}
 				}
@@ -141,7 +141,7 @@ bool PhysicsCore::RayCast(D3DXVECTOR3 startPoint, D3DXVECTOR3 directionVector, l
 					if(tx_min > tx_max || tx_max < 0)
 					{
 						//intersect interval is empty, so we aren't intersecting
-						intersectionHasOccured = FALSE;
+						intersectionHasOccured = false;
 						break;
 					}
 				}
@@ -158,7 +158,7 @@ bool PhysicsCore::RayCast(D3DXVECTOR3 startPoint, D3DXVECTOR3 directionVector, l
 					if(startPoint.y < i->minPoint.y || startPoint.y > i->maxPoint.y)
 					{
 						//Ray is parallel to the y-axis slab and starting y-coordinate lies outside the current collidable. Therefore we aren't intersecting
-						intersectionHasOccured = FALSE;
+						intersectionHasOccured = false;
 						break;
 					}
 				}
@@ -188,13 +188,13 @@ bool PhysicsCore::RayCast(D3DXVECTOR3 startPoint, D3DXVECTOR3 directionVector, l
 					if(ty_min > ty_max || ty_max < 0)
 					{
 						//intersect interval is empty, so we aren't intersecting
-						intersectionHasOccured = FALSE;
+						intersectionHasOccured = false;
 						break;
 					}
 				}
 			}
 
-			if(j == 2 && test_z_axis == TRUE)
+			if(j == 2 && test_z_axis == true)
 			{
 				//Perform z-axis calculations
 
@@ -205,7 +205,7 @@ bool PhysicsCore::RayCast(D3DXVECTOR3 startPoint, D3DXVECTOR3 directionVector, l
 					if(startPoint.z < i->minPoint.z || startPoint.z > i->maxPoint.z)
 					{
 						//Ray is parallel to the z-axis slab and starting z-coordinate lies outside the current collidable. Therefore we aren't intersecting
-						intersectionHasOccured = FALSE;
+						intersectionHasOccured = false;
 						break;
 					}
 				}
@@ -235,21 +235,21 @@ bool PhysicsCore::RayCast(D3DXVECTOR3 startPoint, D3DXVECTOR3 directionVector, l
 					if(tz_min > tz_max || tz_max < 0)
 					{
 						//intersect interval is empty, so we aren't intersecting
-						intersectionHasOccured = FALSE;
+						intersectionHasOccured = false;
 						break;
 					}
 				}
 			}
 		}
 
-		if(intersectionHasOccured == TRUE)
+		if(intersectionHasOccured == true)
 		{
 			//We have intersected with one of the collidables, so move the appropriate values into the output structure and return TRUE
 			contactOutput.t_min.x = tx_min;
 			contactOutput.t_min.y = ty_min;
 			contactOutput.t_min.z = tz_min;
 			contactOutput.collidable_ID = i->ID;
-			return TRUE;
+			return true;
 		}
 		
 		if(numIterations > maxTestLimit)
@@ -263,7 +263,7 @@ bool PhysicsCore::RayCast(D3DXVECTOR3 startPoint, D3DXVECTOR3 directionVector, l
 	}
 
 	//If we get to this point in the function, we've either reached the limit for number of tests, or we've iterated through all collidables in the list and found no intersections
-	return FALSE;
+	return false;
 }
 
 
