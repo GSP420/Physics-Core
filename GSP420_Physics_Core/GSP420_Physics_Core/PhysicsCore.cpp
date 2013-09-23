@@ -84,10 +84,10 @@ bool PhysicsCore::RayCast(D3DXVECTOR3 startPoint, D3DXVECTOR3 directionVector, l
 				//Perform x-axis calculations
 
 
-				if(Abs(directionVector.x) < EPSILON)
+				if(abs(directionVector.x) < EPSILON)
 				{
 					//Ray is parallel to the x-axis slab
-					if(startPoint.x < i->collidables.minPoint.x || startPoint.x > i->collidables.maxPoint.x)
+					if(startPoint.x < i->minPoint.x || startPoint.x > i->maxPoint.x)
 					{
 						//Ray is parallel to the x-axis slab and starting x-coordinate lies outside the current collidable. Therefore we aren't intersecting
 						intersectionHasOccured = FALSE;
@@ -97,8 +97,8 @@ bool PhysicsCore::RayCast(D3DXVECTOR3 startPoint, D3DXVECTOR3 directionVector, l
 				else
 				{
 					//Ray is not parallel to the x-axis slab, so calculate t intersect values
-					t1 = (i->collidables.minPoint.x - startPoint.x) * dxNormal;
-					t2 = (i->collidables.maxPoint.x - startPoint.x) * dxNormal;
+					t1 = (i->minPoint.x - startPoint.x) * dxNormal;
+					t2 = (i->maxPoint.x - startPoint.x) * dxNormal;
 
 					//Swap values if necessary to ensure that t1 is our near intersect and t2 is our far intersect
 					if(t1 > t2)
@@ -131,10 +131,10 @@ bool PhysicsCore::RayCast(D3DXVECTOR3 startPoint, D3DXVECTOR3 directionVector, l
 				//Perform y-axis calculations
 
 
-				if(Abs(directionVector.y) < EPSILON)
+				if(abs(directionVector.y) < EPSILON)
 				{
 					//Ray is parallel to the y-axis slab
-					if(startPoint.y < i->collidables.minPoint.y || startPoint.y > i->collidables.maxPoint.y)
+					if(startPoint.y < i->minPoint.y || startPoint.y > i->maxPoint.y)
 					{
 						//Ray is parallel to the y-axis slab and starting y-coordinate lies outside the current collidable. Therefore we aren't intersecting
 						intersectionHasOccured = FALSE;
@@ -144,8 +144,8 @@ bool PhysicsCore::RayCast(D3DXVECTOR3 startPoint, D3DXVECTOR3 directionVector, l
 				else
 				{
 					//Ray is not parallel to the y-axis slab, so calculate t intersect values
-					t1 = (i->collidables.minPoint.y - startPoint.y) * dyNormal;
-					t2 = (i->collidables.maxPoint.y - startPoint.y) * dyNormal;
+					t1 = (i->minPoint.y - startPoint.y) * dyNormal;
+					t2 = (i->maxPoint.y - startPoint.y) * dyNormal;
 
 					//Swap values if necessary to ensure that t1 is our near intersect and t2 is our far intersect
 					if(t1 > t2)
@@ -178,10 +178,10 @@ bool PhysicsCore::RayCast(D3DXVECTOR3 startPoint, D3DXVECTOR3 directionVector, l
 				//Perform z-axis calculations
 
 
-				if(Abs(directionVector.z) < EPSILON)
+				if(abs(directionVector.z) < EPSILON)
 				{
 					//Ray is parallel to the z-axis slab
-					if(startPoint.z < i->collidables.minPoint.z || startPoint.z > i->collidables.maxPoint.z)
+					if(startPoint.z < i->minPoint.z || startPoint.z > i->maxPoint.z)
 					{
 						//Ray is parallel to the z-axis slab and starting z-coordinate lies outside the current collidable. Therefore we aren't intersecting
 						intersectionHasOccured = FALSE;
@@ -191,8 +191,8 @@ bool PhysicsCore::RayCast(D3DXVECTOR3 startPoint, D3DXVECTOR3 directionVector, l
 				else
 				{
 					//Ray is not parallel to the z-axis slab, so calculate t intersect values
-					t1 = (i->collidables.minPoint.z - startPoint.z) * dzNormal;
-					t2 = (i->collidables.maxPoint.z - startPoint.z) * dzNormal;
+					t1 = (i->minPoint.z - startPoint.z) * dzNormal;
+					t2 = (i->maxPoint.z - startPoint.z) * dzNormal;
 
 					//Swap values if necessary to ensure that t1 is our near intersect and t2 is our far intersect
 					if(t1 > t2)
@@ -227,7 +227,7 @@ bool PhysicsCore::RayCast(D3DXVECTOR3 startPoint, D3DXVECTOR3 directionVector, l
 			contactOutput.t_min.x = tx_min;
 			contactOutput.t_min.y = ty_min;
 			contactOutput.t_min.z = tz_min;
-			contactOutput.collidable_ID = i->collidables.ID;
+			contactOutput.collidable_ID = i->ID;
 			return TRUE;
 		}
 		

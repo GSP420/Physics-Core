@@ -14,6 +14,8 @@
 #include <list>
 #include <string>
 #include <cmath>
+#include <functional>
+#include <algorithm>
 
 using namespace std;
 
