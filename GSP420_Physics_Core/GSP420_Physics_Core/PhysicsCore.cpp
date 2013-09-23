@@ -20,16 +20,18 @@ void PhysicsCore::Accelerate()
 	*	Determines the new velocity by adding the current
 	*	velocity to current acceleration*delta time
 	******************************************************/
-	double cur_accel, cur_vel, new_vel;
-	float delta_time;
+	double cur_Acceleration;
+	double cur_Velocity;
+	double new_Velocity;
+	float delta_Time;
 	
-	cur_accel = GetAcceleration();
-	cur_vel = GetVelocity();
-	new_vel = cur_vel + cur_accel * delta_time;
+	cur_Acceleration = GetAcceleration();
+	cur_Velocity = GetVelocity();
+	new_Velocity = cur_Velocity + cur_Acceleration * delta_Time;
 
-	if(new_vel > max_Velocity)
+	if(new_Velocity > max_Velocity)
 	{
-		new_vel = max_Velocity;
+		new_Velocity = max_Velocity;
 	}
 }
 
