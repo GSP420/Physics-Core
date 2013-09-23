@@ -16,9 +16,9 @@ class Octree
 {
 private:
 	
-	const int MAX_OCTREE_DEPTH = 6;			//keeps us from making to many nodes in one octree
-	const int MIN_AABBS_PER_OCTREE = 2;		//if there is less than two then we no longer need that node
-	const int MAX_AABBS_PER_OCTREE = 6;		//if there are more than 6 then we need to create another node
+	static const int MAX_OCTREE_DEPTH = 6;			//keeps us from making to many nodes in one octree
+	static const int MIN_AABBS_PER_OCTREE = 2;		//if there is less than two then we no longer need that node
+	static const int MAX_AABBS_PER_OCTREE = 6;		//if there are more than 6 then we need to create another node
 
 	D3DXVECTOR3 corner1;
 	D3DXVECTOR3 corner2;
@@ -26,7 +26,7 @@ private:
 
 	Octree *children[2][2][2];				//3 dimensional array for the nodes of the octree
 	bool hasChildren;						//boolean indicating if there are children or not
-	set<AABB*> boundingBoxes;				//the boundign boxes in the node if it doesn't have any children
+	set<AABB*> boundingBoxes;				//the bounding boxes in the node if it doesn't have any children
 	int depth;								//the depth of the tree
 	int numBoundingBoxes;					//number of bounding boxes including in the children
 
