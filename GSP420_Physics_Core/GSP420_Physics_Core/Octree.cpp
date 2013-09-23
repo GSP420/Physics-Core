@@ -121,7 +121,7 @@ void Octree::haveChildren()
 	for(set<AABB*>::iterator it = boundingBoxes.begin(); it != boundingBoxes.end(); it++) 
 	{
 		AABB* aabb = *it;
-		handleBoundingBoxes(aabb, aabb->center, true);
+		handleBoundingBoxes(aabb, aabb->center(), true);
 	}
 	
 	boundingBoxes.clear();
@@ -224,7 +224,7 @@ void Octree::add(AABB* aabb)
 			
 	if (hasChildren) 
 	{
-		handleBoundingBoxes(aabb, aabb->center, true);
+		handleBoundingBoxes(aabb, aabb->center(), true);
 	}
 	else 
 	{
@@ -234,7 +234,7 @@ void Octree::add(AABB* aabb)
 
 void Octree::remove(AABB* aabb)
 {
-	remove(aabb, aabb->center);
+	remove(aabb, aabb->center());
 }
 
 void Octree::boundingBoxMoved(AABB* aabb, D3DXVECTOR3 oldPos)
