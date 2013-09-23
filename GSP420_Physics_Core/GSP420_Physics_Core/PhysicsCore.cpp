@@ -57,6 +57,9 @@ bool PhysicsCore::RayCast(D3DXVECTOR3 startPoint, D3DXVECTOR3 directionVector, l
 	
 	const float EPSILON = 0.00001;
 
+	//Keep track of how many times we've iterated through the collidables list
+	int numIterations = 0;
+
 	//Convert the three vector components of the direction vector into normalized form
 	float dxNormal = 1.0/directionVector.x;
 	float dyNormal = 1.0/directionVector.y;
@@ -231,13 +234,13 @@ bool PhysicsCore::RayCast(D3DXVECTOR3 startPoint, D3DXVECTOR3 directionVector, l
 			return TRUE;
 		}
 		
-		if(i > maxTestLimit)
+		if(numIterations > maxTestLimit)
 		{
 			break;
 		}
 		else
 		{
-			i++;
+			numIterations++;
 		}
 	}
 
