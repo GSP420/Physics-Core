@@ -13,6 +13,23 @@ PhysicsCore::~PhysicsCore(void)
 
 void PhysicsCore::Accelerate()
 {
+	/******************************************************
+	*	Function Name		Accelerate()
+	*	Programmer			Alexander Hunsiker
+	*
+	*	Determines the new velocity by adding the current
+	*	velocity with the current acceleration
+	******************************************************/
+	double cur_accel, cur_vel, new_vel, max_vel;
+	
+	cur_accel = GetAcceleration();
+	cur_vel = GetVelocity();
+	new_vel = cur_vel + cur_accel * delta_time;
+
+	if(new_vel > max_vel)
+	{
+		new_vel = max_vel;
+	}
 }
 
 
