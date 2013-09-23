@@ -108,7 +108,7 @@ public:
 	PhysicsCore(void);
 	~PhysicsCore(void);
 
-	void Accelerate();
+	void Accelerate(float delta_Time);
 	void SpatialPartitioning();
 	bool RayCast(D3DXVECTOR3 startPoint, D3DXVECTOR3 directionVector, list<AABB> collidables, int maxTestLimit, bool test_z_axis, RayCastContact &contactOutput);
 	void CollisionMaskLayers();

@@ -11,7 +11,7 @@ PhysicsCore::~PhysicsCore(void)
 }
 
 
-void PhysicsCore::Accelerate()
+void PhysicsCore::Accelerate(float delta_Time)
 {
 	/******************************************************
 	*	Function Name		Accelerate()
@@ -23,7 +23,6 @@ void PhysicsCore::Accelerate()
 	double cur_Acceleration;
 	double cur_Velocity;
 	double new_Velocity;
-	float delta_Time;
 	
 	cur_Acceleration = GetAcceleration();
 	cur_Velocity = GetVelocity();
