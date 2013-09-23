@@ -1,4 +1,6 @@
 #pragma once
+#include "PhysicsCore.h"
+
 class PhysicsCollision
 {
 public:
