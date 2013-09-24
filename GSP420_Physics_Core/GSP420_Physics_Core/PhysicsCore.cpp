@@ -20,9 +20,9 @@ void PhysicsCore::Accelerate(float delta_Time)
 	*	Determines the new velocity by adding the current
 	*	velocity to current acceleration*delta time
 	******************************************************/
-	double cur_Acceleration;
-	double cur_Velocity;
-	double new_Velocity;
+	D3DXVECTOR3 cur_Acceleration;
+	D3DXVECTOR3 cur_Velocity;
+	D3DXVECTOR3 new_Velocity;
 	
 	cur_Acceleration = GetAcceleration();
 	cur_Velocity = GetVelocity();
@@ -32,11 +32,6 @@ void PhysicsCore::Accelerate(float delta_Time)
 	{
 		new_Velocity = max_Velocity;
 	}
-}
-
-
-void PhysicsCore::SpatialPartitioning()
-{
 }
 
 
@@ -273,7 +268,7 @@ void PhysicsCore::CollisionMaskLayers()
 }
 
 
-double PhysicsCore::GetVelocity()
+D3DXVECTOR3 PhysicsCore::GetVelocity()
 {
   return velocity;
 }
@@ -285,7 +280,7 @@ void PhysicsCore::SetVelocity(double Vel)
 }
 
 
-double PhysicsCore::GetAcceleration()
+D3DXVECTOR3 PhysicsCore::GetAcceleration()
 {
   return acceleration;
 }

@@ -94,27 +94,28 @@ struct RayCastContact
 	string collidable_ID;
 };
 
+const double GRAVITY = -6.8;		
+const double FRICTION = 0.5;	//friction coefficient that may need changed after testing	
+const D3DXVECTOR3 max_Velocity = D3DXVECTOR3(5.0f, 5.0f, 0.0f);
+const D3DXVECTOR3 max_Acceleration = D3DXVECTOR3(1.0f, float(GRAVITY), 0.0f);
+
 class PhysicsCore
 {
 public:
-	double gravity;
-	double friction;
-	double max_Velocity;
-	double max_Acceleration;
-	double velocity;
-	double acceleration;
+	
+	D3DXVECTOR3 velocity;
+	D3DXVECTOR3 acceleration;
 
 
 	PhysicsCore(void);
 	~PhysicsCore(void);
 
 	void Accelerate(float delta_Time);
-	void SpatialPartitioning();
 	bool RayCast(D3DXVECTOR3 startPoint, D3DXVECTOR3 directionVector, list<AABB> collidables, int maxTestLimit, bool test_z_axis, RayCastContact &contactOutput);
 	void CollisionMaskLayers();
-	double GetVelocity();
+	D3DXVECTOR3 GetVelocity();
 	void SetVelocity(double vel);
-	double GetAcceleration();
+	D3DXVECTOR3 GetAcceleration();
 	void SetAcceleration(double accel);
 };
 
