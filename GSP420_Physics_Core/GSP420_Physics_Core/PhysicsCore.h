@@ -106,7 +106,6 @@ public:
 	D3DXVECTOR3 velocity;
 	D3DXVECTOR3 acceleration;
 
-
 	PhysicsCore(void);
 	~PhysicsCore(void);
 
@@ -114,8 +113,8 @@ public:
 	bool RayCast(D3DXVECTOR3 startPoint, D3DXVECTOR3 directionVector, list<AABB> collidables, int maxTestLimit, bool test_z_axis, RayCastContact &contactOutput);
 	void CollisionMaskLayers();
 	D3DXVECTOR3 GetVelocity();
-	void SetVelocity(double vel);
+	void SetVelocity(D3DXVECTOR3 vel);
 	D3DXVECTOR3 GetAcceleration();
-	void SetAcceleration(double accel);
+	void SetAcceleration(D3DXVECTOR3 accel);
 };
 
