@@ -274,7 +274,7 @@ D3DXVECTOR3 PhysicsCore::GetVelocity()
 }
 
 
-void PhysicsCore::SetVelocity(double Vel)
+void PhysicsCore::SetVelocity(D3DXVECTOR3 Vel)
 {
   velocity = Vel;
 }
@@ -286,7 +286,7 @@ D3DXVECTOR3 PhysicsCore::GetAcceleration()
 }
 
 
-void PhysicsCore::SetAcceleration(double Accel)
+void PhysicsCore::SetAcceleration(D3DXVECTOR3 Accel)
 {
   acceleration = Accel;
 }
