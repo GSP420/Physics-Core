@@ -11,8 +11,34 @@ PhysicsCollision::~PhysicsCollision(void)
 }
 
 
-void PhysicsCollision::ContinuousCollisionDetection()
+D3DXVECTOR3 PhysicsCollision::ObjectDistance(D3DXVECTOR3 Obj1, D3DXVECTOR3 Obj2)
 {
+	/******************************************************
+	*	Function Name:		ObjectDistance()
+	*	Programmer:			Nathanael Blanchard
+	*
+	*	Finds distance between two objects
+	******************************************************/
+	D3DXVECTOR3 length;
+	length = Obj2 - Obj1;
+	return(length);
+}
+
+
+void PhysicsCollision::ContinuousCollisionDetection(D3DXVECTOR3 Obj1, D3DXVECTOR3 Obj2)
+{
+	/******************************************************
+	*	Function Name:		ContinousCollisionDetection()
+	*	Programmer:			Nathanael Blanchard
+	*
+	*
+	******************************************************/
+
+	/*
+
+
+
+	*/
 }
 
 

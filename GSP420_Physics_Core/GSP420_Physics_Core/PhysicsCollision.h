@@ -10,7 +10,8 @@ public:
 	PhysicsCollision(void);
 	~PhysicsCollision(void);
 
-	void ContinuousCollisionDetection();
+	D3DXVECTOR3 ObjectDistance(D3DXVECTOR3, D3DXVECTOR3);
+	void ContinuousCollisionDetection(D3DXVECTOR3, D3DXVECTOR3);
 	vector<AABBPair> CollisionDetection(vector<AABB*> &boxes, Octree* octree, bool test_z_axis);
 };
 
