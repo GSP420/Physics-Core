@@ -108,7 +108,8 @@ public:
 	~PhysicsCore(void);
 
 	void Accelerate(float delta_Time);
-	bool RayCast(D3DXVECTOR3 startPoint, D3DXVECTOR3 directionVector, list<AABB> collidables, int maxTestLimit, bool test_z_axis, RayCastContact &contactOutput);
+	bool RayCast(D3DXVECTOR3 startPoint, D3DXVECTOR3 directionVector, list<AABB> collidables, int maxTestLimit, RayCastContact &contactOutput);
+	bool RayCast(D3DXVECTOR2 startPoint, D3DXVECTOR2 directionVector, list<AABB> collidables, int maxTestLimit, RayCastContact &contactOutput);
 	void CollisionMaskLayers();
 	D3DXVECTOR3 GetVelocity();
 	void SetVelocity(D3DXVECTOR3 vel);
