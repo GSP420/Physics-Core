@@ -19,9 +19,9 @@ D3DXVECTOR3 PhysicsCollision::ObjectDistance(D3DXVECTOR3 Obj1, D3DXVECTOR3 Obj2)
 	*
 	*	Finds distance between two objects
 	******************************************************/
-	D3DXVECTOR3 length;
-	length = Obj2 - Obj1;
-	return(length);
+	D3DXVECTOR3 dist;
+	dist = Obj2 - Obj1;
+	return(dist);
 }
 
 
@@ -33,11 +33,14 @@ void PhysicsCollision::ContinuousCollisionDetection(D3DXVECTOR3 Obj1, D3DXVECTOR
 	*
 	*
 	******************************************************/
-
+	D3DXVECTOR3 dist = ObjectDistance(Obj1, Obj2);
 	/*
+	dist2 = ObjectDistance(Obj1.nextmove, Obj2.nextmove)
 
-
-
+	if((dist - dist2) < 0)
+		adjust vel so object stops at collide point
+	else
+		do nothing?
 	*/
 }
 
