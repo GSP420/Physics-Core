@@ -242,3 +242,48 @@ void Octree::boundingBoxMoved(AABB* aabb, D3DXVECTOR3 oldPos)
 	remove(aabb, oldPos);
 	add(aabb);
 }
+
+//Adds potential AABB-AABB collisions to the specified set
+void Octree::potentialBoxBoxCollision(vector<AABBPair> &collisions)
+{
+	if (hasChildren) 
+	{
+		for(int x = 0; x < 2; x++) 
+		{
+			for(int y = 0; y < 2; y++) 
+			{
+				for(int z = 0; z < 2; z++) 
+				{
+					children[x][y][z]->potentialBoxBoxCollision(collisions);
+				}
+			}
+		}
+	}
+	else 
+	{
+		//Add all pairs (aabb1, aabb2) from boundingBoxes
+		for(set<AABB*>::iterator it = boundingBoxes.begin(); it != boundingBoxes.end(); it++) 
+		{
+			AABB* aabb1 = *it;
+			for(set<AABB*>::iterator it2 = boundingBoxes.begin(); it2 != boundingBoxes.end(); it2++) 
+			{
+				AABB* aabb2 = *it2;
+				//This test makes sure that we only add each pair once
+				if (aabb1 < aabb2) 
+				{
+					AABBPair bp;
+					bp.aabb1 = aabb1;
+					bp.aabb2 = aabb2;
+					collisions.push_back(bp);
+				}
+			}
+		}
+	}
+}
+
+//Puts potential Box-Box collisions in potentialCollisions
+//this function must return all actual collisions but it doesn't to return only actual collisions
+void Octree::potentialBoxBoxCollision(vector<AABBPair> &potentialCollisions, vector<AABB*> &boxes, Octree* octree)
+{
+	octree->potentialBoxBoxCollision(potentialCollisions);
+}

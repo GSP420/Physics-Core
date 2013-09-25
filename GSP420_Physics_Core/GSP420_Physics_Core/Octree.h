@@ -11,11 +11,17 @@
 
 #include "PhysicsCore.h"
 #include <set>
+#include <vector>
+
+struct AABBPair
+{
+	AABB* aabb1;
+	AABB* aabb2;
+};
 
 class Octree
 {
 private:
-	
 	static const int MAX_OCTREE_DEPTH = 6;			//keeps us from making to many nodes in one octree
 	static const int MIN_AABBS_PER_OCTREE = 2;		//if there is less than two then we no longer need that node
 	static const int MAX_AABBS_PER_OCTREE = 6;		//if there are more than 6 then we need to create another node
@@ -43,4 +49,6 @@ public:
 	void add(AABB* aabb);
 	void remove(AABB* aabb);
 	void boundingBoxMoved(AABB* aabb, D3DXVECTOR3 oldPos);
+	void potentialBoxBoxCollision(vector<AABBPair> &collisions);
+	void potentialBoxBoxCollision(vector<AABBPair> &potentialCollisions, vector<AABB*> &boxes, Octree* octree);
 };

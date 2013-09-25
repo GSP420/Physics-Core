@@ -16,7 +16,7 @@ void PhysicsCollision::ContinuousCollisionDetection()
 }
 
 
-bool PhysicsCollision::CollisionDetection(AABB shapeOne, AABB shapeTwo, bool test_z_axis)
+bool PhysicsCollision::CollisionDetection(AABB shapeOne, AABB shapeTwo, Octree* octree, bool test_z_axis)
 {
 	/******************************************************
 	*	Function Name:		CollisionDetection()
