@@ -4,11 +4,13 @@
 
 class PhysicsCollision
 {
+	Octree _octree;
+
 public:
 	PhysicsCollision(void);
 	~PhysicsCollision(void);
 
 	void ContinuousCollisionDetection();
-	bool CollisionDetection(AABB shapeOne, AABB shapeTwo, Octree* octree, bool test_z_axis);
+	bool CollisionDetection(vector<AABB*> &boxes, Octree* octree, bool test_z_axis);
 };
 
