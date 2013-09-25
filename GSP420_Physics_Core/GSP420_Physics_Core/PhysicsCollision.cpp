@@ -16,7 +16,7 @@ void PhysicsCollision::ContinuousCollisionDetection()
 }
 
 
-bool PhysicsCollision::CollisionDetection(vector<AABB*> &boxes, Octree* octree, bool test_z_axis)
+vector<AABBPair> PhysicsCollision::CollisionDetection(vector<AABB*> &boxes, Octree* octree, bool test_z_axis)
 {
 	/******************************************************
 	*	Function Name:		CollisionDetection()
@@ -31,49 +31,59 @@ bool PhysicsCollision::CollisionDetection(vector<AABB*> &boxes, Octree* octree, 
 	******************************************************/
 
 	vector<AABBPair> bps;
-	_octree.potentialBoxBoxCollision(bps, boxes, octree);
+	vector<AABBPair> are_colliding;
+	bool continueChecking;
+
+	_octree->potentialBoxBoxCollision(bps, boxes, octree);
 	for(unsigned int i = 0; i < bps.size(); i++) 
 	{
-		AABBPair bp = bps[i];
+		continueChecking = true;
+		while(continueChecking)
+		{
+			AABBPair bp = bps[i];
 		
-		AABB* shapeOne = bp.aabb1;
-		AABB* shapeTwo = bp.aabb2;
+			AABB* shapeOne = bp.aabb1;
+			AABB* shapeTwo = bp.aabb2;
 
-		//Test shape projections along each axes for overlap. Function can exit as soon as a disjoint (non intersecting) projection is found
-		if(shapeOne->maxPoint.x < shapeTwo->minPoint.x || shapeTwo->maxPoint.x < shapeOne->minPoint.x)
-		{
-			//The shapes' projections along the x-axis are disjoint, so the shapes are not colliding
-			return false;
-		}
-		else
-		{
-			if(shapeOne->maxPoint.y < shapeTwo->minPoint.y || shapeTwo->maxPoint.y < shapeOne->minPoint.y)
+			//Test shape projections along each axes for overlap. Function can exit as soon as a disjoint (non intersecting) projection is found
+			if(shapeOne->maxPoint.x < shapeTwo->minPoint.x || shapeTwo->maxPoint.x < shapeOne->minPoint.x)
 			{
-				//The shapes' projection along the y-axis are disjoint, so the shapes are not colliding
-				return false;
+				//The shapes' projections along the x-axis are disjoint, so the shapes are not colliding
+				continueChecking = false;
 			}
 			else
 			{
-				if(test_z_axis)
+				if(shapeOne->maxPoint.y < shapeTwo->minPoint.y || shapeTwo->maxPoint.y < shapeOne->minPoint.y)
 				{
-					//Collision detection along z axis is desired, so test the third axis for intersection:
-					if(shapeOne->maxPoint.z < shapeTwo->minPoint.z || shapeTwo->maxPoint.z < shapeOne->minPoint.z)
-					{
-						//The shapes' projection along the z-axis are disjoint, so the shapes are not colliding
-						return false;
-					}
-					else
-					{
-						//The shapes' projection along all three axes are intersecting, so the shapes ARE colliding
-						return true;
-					}
+					//The shapes' projection along the y-axis are disjoint, so the shapes are not colliding
+					continueChecking = false;
 				}
 				else
 				{
-					//Collision detection along z axis is NOT desired, and the shapes' projections along both the x and y axes are intersecting, so the shapes ARE colliding
-					return true;
+					if(test_z_axis)
+					{
+						//Collision detection along z axis is desired, so test the third axis for intersection:
+						if(shapeOne->maxPoint.z < shapeTwo->minPoint.z || shapeTwo->maxPoint.z < shapeOne->minPoint.z)
+						{
+							//The shapes' projection along the z-axis are disjoint, so the shapes are not colliding
+							continueChecking = false;
+						}
+						else
+						{
+							//The shapes' projection along all three axes are intersecting, so the shapes ARE colliding
+							are_colliding.push_back(bp);
+							continueChecking = false;
+						}
+					}
+					else
+					{
+						//Collision detection along z axis is NOT desired, and the shapes' projections along both the x and y axes are intersecting, so the shapes ARE colliding
+						are_colliding.push_back(bp);
+						continueChecking = false;
+					}
 				}
 			}
-		}	
-	}
+		}//End while loop
+	}//End for loop
+	return are_colliding;
 }
