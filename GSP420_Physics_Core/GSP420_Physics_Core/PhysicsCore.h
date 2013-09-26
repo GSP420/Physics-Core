@@ -92,15 +92,15 @@ struct RayCastContact
 	string collidable_ID;
 };
 
-const double GRAVITY = -6.8;		
-const double FRICTION = 0.5;	//friction coefficient that may need changed after testing	
-const D3DXVECTOR3 max_Velocity = D3DXVECTOR3(5.0f, 5.0f, 0.0f);
-const D3DXVECTOR3 max_Acceleration = D3DXVECTOR3(1.0f, float(GRAVITY), 0.0f);
+	
+
 
 class PhysicsCore
 {
 public:
-	
+	const double GRAVITY = -6.8f;	
+	const double FRICTION = 0.5f;	//friction coefficient that may need changed after testing	
+
 	D3DXVECTOR3 velocity;
 	D3DXVECTOR3 acceleration;
 
@@ -116,4 +116,6 @@ public:
 	D3DXVECTOR3 GetAcceleration();
 	void SetAcceleration(D3DXVECTOR3 accel);
 };
+
+	
 
