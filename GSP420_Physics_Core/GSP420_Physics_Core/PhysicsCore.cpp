@@ -21,19 +21,26 @@ void PhysicsCore::Accelerate(float delta_Time)
 	*	velocity to current acceleration*delta time
 	******************************************************/
 	D3DXVECTOR3 max_Velocity = D3DXVECTOR3(5.0f, 5.0f, 0.0f);
-	D3DXVECTOR3 max_Acceleration = D3DXVECTOR3(1.0f, float(GRAVITY), 0.0f);
+	D3DXVECTOR3 max_Acceleration = D3DXVECTOR3(float(-GRAVITY), float(-GRAVITY), 0.0f);
 	D3DXVECTOR3 cur_Acceleration;
 	D3DXVECTOR3 cur_Velocity;
 	D3DXVECTOR3 new_Velocity;
 	
 	cur_Acceleration = GetAcceleration();
 	cur_Velocity = GetVelocity();
-	new_Velocity = cur_Velocity + cur_Acceleration * delta_Time;
+	new_Velocity += cur_Acceleration * delta_Time;
+	new_Velocity.x *= float(FRICTION);
 
 	if(new_Velocity > max_Velocity)
-	{
 		new_Velocity = max_Velocity;
-	}
+	if(new_Velocity < -max_Velocity)
+		new_Velocity = -max_Velocity;
+	if(cur_Acceleration > max_Acceleration)
+		cur_Acceleration = max_Acceleration;
+	if(cur_Acceleration < -max_Acceleration)
+		cur_Acceleration = -max_Acceleration;
+
+	SetVelocity(new_Velocity);
 }
 
 

@@ -208,7 +208,7 @@ Octree::Octree(D3DXVECTOR3 c1, D3DXVECTOR3 c2, int d)
 //destructs the octrees along with all their children
 Octree::~Octree()
 {
-	if (hasChildren) 
+		if (hasChildren) 
 	{
 		destroyChildren();
 	}
@@ -286,4 +286,34 @@ void Octree::potentialBoxBoxCollision(vector<AABBPair> &collisions)
 void Octree::potentialBoxBoxCollision(vector<AABBPair> &potentialCollisions, vector<AABB*> &boxes, Octree* octree)
 {
 	octree->potentialBoxBoxCollision(potentialCollisions);
+}
+
+void Octree::moveBoxes(vector<AABB*> &boxes, Octree* octree, float dt)
+{
+	for(int i = 0; i < boxes.size(); i++)
+	{
+		AABB* aabb = boxes[i];
+		D3DXVECTOR3 oldPos = aabb->extent;
+		aabb->extent += core.velocity * dt;
+		octree->boundingBoxMoved(aabb, oldPos);
+	}
+}
+
+void Octree::advance(vector<AABB*> &boxes, Octree* octree, float t, float &timeUntilUpdate)
+{
+	while(t > 0)
+	{
+		if(timeUntilUpdate <= t)
+		{
+			moveBoxes(boxes, octree, timeUntilUpdate);
+			t -= timeUntilUpdate;
+			timeUntilUpdate = TIME_TO_NEXT_UPDATE;
+		}
+		else
+		{
+			moveBoxes(boxes, octree, t);
+			timeUntilUpdate -= t;
+			t = 0;
+		}
+	}
 }

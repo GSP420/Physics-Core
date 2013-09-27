@@ -11,28 +11,27 @@ PhysicsManager::~PhysicsManager(void)
 }
 
 
-void PhysicsManager::useRaycast(bool RayCast)
+bool PhysicsManager::RayCast(D3DXVECTOR3 startPoint, D3DXVECTOR3 directionVector, list<AABB> collidables, int maxTestLimit, RayCastContact &contactOutput)
 {
-	rayCast = RayCast;
+	return core.RayCast(startPoint, directionVector, collidables, maxTestLimit, contactOutput);
 }
 
 
-void PhysicsManager::useContinuous(bool Continuous)
+bool PhysicsManager::RayCast(D3DXVECTOR2 startPoint, D3DXVECTOR2 directionVector, list<AABB> collidables, int maxTestLimit, RayCastContact &contactOutput)
 {
-	contiuous = Continuous;
+	return core.RayCast(startPoint, directionVector, collidables, maxTestLimit, contactOutput);
 }
 
-//Not sure about this one yet
-bool PhysicsManager::collision()
+
+bool PhysicsManager::collision(vector<AABB*> &boxes, Octree* octree, bool test_z_axis)
 {
-	if(contiuous)
-	{
-		//collide.ContinuousCollisionDetection(
-	}
-	else
-	{
-		//collide.CollisionDetection(
-	}
+	 return collide.CollisionDetection(boxes, octree, test_z_axis);
+}
+
+
+bool PhysicsManager::collision(D3DXVECTOR3 Obj1, D3DXVECTOR3 Obj2)
+{
+	return collide.ContinuousCollisionDetection(Obj1, Obj2);
 }
 
 
@@ -52,16 +51,21 @@ void PhysicsManager::StartUp()
 {
 	core.velocity = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	core.acceleration = D3DXVECTOR3(0.0f, float(core.GRAVITY), 0.0f);
+	timeUntilUpdate = 0.0f;
 }
 
 
 void PhysicsManager::Shutdown()
 {
+	for(int i = 0; i < boxes.size(); i++)
+		delete boxes[i];
 
+	 delete octree;
 }
 
 
 void PhysicsManager::Update(float dt)
 {
 	core.Accelerate(dt);
+	octree->advance(boxes, octree, dt, timeUntilUpdate); 
 }
