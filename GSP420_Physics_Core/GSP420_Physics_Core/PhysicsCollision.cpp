@@ -25,7 +25,7 @@ D3DXVECTOR3 PhysicsCollision::ObjectDistance(D3DXVECTOR3 Obj1, D3DXVECTOR3 Obj2)
 }
 
 
-bool PhysicsCollision::ContinuousCollisionDetection(D3DXVECTOR3 Obj1, D3DXVECTOR3 Obj2)
+float PhysicsCollision::ContinuousCollisionDetection(D3DXVECTOR3 Obj1_previous, D3DXVECTOR3 Obj1_current, D3DXVECTOR3 Obj2_previous, D3DXVECTOR3 Obj2_current)
 {
 	/******************************************************
 	*	Function Name:		ContinousCollisionDetection()
@@ -33,7 +33,8 @@ bool PhysicsCollision::ContinuousCollisionDetection(D3DXVECTOR3 Obj1, D3DXVECTOR
 	*
 	*
 	******************************************************/
-	D3DXVECTOR3 dist = ObjectDistance(Obj1, Obj2);
+	
+	
 	/*
 	dist2 = ObjectDistance(Obj1.nextmove, Obj2.nextmove)
 
