@@ -11,25 +11,25 @@ PhysicsManager::~PhysicsManager(void)
 }
 
 
-bool PhysicsManager::RayCast(D3DXVECTOR3 startPoint, D3DXVECTOR3 directionVector, list<AABB> collidables, int maxTestLimit, RayCastContact &contactOutput)
+bool PhysicsManager::RayCast3D(D3DXVECTOR3 startPoint, D3DXVECTOR3 directionVector, list<AABB> collidables, int maxTestLimit, RayCastContact &contactOutput)
 {
 	return core.RayCast(startPoint, directionVector, collidables, maxTestLimit, contactOutput);
 }
 
 
-bool PhysicsManager::RayCast(D3DXVECTOR2 startPoint, D3DXVECTOR2 directionVector, list<AABB> collidables, int maxTestLimit, RayCastContact &contactOutput)
+bool PhysicsManager::RayCast2D(D3DXVECTOR2 startPoint, D3DXVECTOR2 directionVector, list<AABB> collidables, int maxTestLimit, RayCastContact &contactOutput)
 {
 	return core.RayCast(startPoint, directionVector, collidables, maxTestLimit, contactOutput);
 }
 
 
-bool PhysicsManager::collision(vector<AABB*> &boxes, Octree* octree, bool test_z_axis)
+bool PhysicsManager::detectCollision(vector<AABB*> &boxes, Octree* octree, bool test_z_axis)
 {
 	 return collide.CollisionDetection(boxes, octree, test_z_axis);
 }
 
 
-bool PhysicsManager::collision(D3DXVECTOR3 Obj1, D3DXVECTOR3 Obj2)
+bool PhysicsManager::continuousCollision(D3DXVECTOR3 Obj1, D3DXVECTOR3 Obj2)
 {
 	return collide.ContinuousCollisionDetection(Obj1, Obj2);
 }
@@ -38,6 +38,18 @@ bool PhysicsManager::collision(D3DXVECTOR3 Obj1, D3DXVECTOR3 Obj2)
 void PhysicsManager::setAccel(D3DXVECTOR3 acceleration)
 {
 	core.SetAcceleration(acceleration);
+}
+
+
+D3DXVECTOR3 PhysicsManager::getAccel()
+{
+	return core.GetAcceleration();
+}
+
+
+void PhysicsManager::setVel(D3DXVECTOR3 velocity)
+{
+	core.SetVelocity(velocity);
 }
 
 
