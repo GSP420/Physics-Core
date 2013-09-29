@@ -25,7 +25,9 @@ D3DXVECTOR3 PhysicsCollision::ObjectDistance(D3DXVECTOR3 Obj1, D3DXVECTOR3 Obj2)
 }
 
 
-float PhysicsCollision::ContinuousCollisionDetection(D3DXVECTOR3 Obj1_previous, D3DXVECTOR3 Obj1_current, D3DXVECTOR3 Obj2_previous, D3DXVECTOR3 Obj2_current)
+bool PhysicsCollision::ContinuousCollisionDetection(D3DXVECTOR3 Obj1_centerPoint_previous, D3DXVECTOR3 Obj1_centerPoint_current, D3DXVECTOR3 Obj1_extent, 
+													D3DXVECTOR3 Obj2_centerPoint_previous, D3DXVECTOR3 Obj2_centerPoint_current, D3DXVECTOR3 Obj2_extent,
+													float deltaTime, float &timeToImpact)
 {
 	/******************************************************
 	*	Function Name:		ContinousCollisionDetection()
@@ -43,6 +45,23 @@ float PhysicsCollision::ContinuousCollisionDetection(D3DXVECTOR3 Obj1_previous, 
 	else
 		do nothing?
 	*/
+
+	D3DXVECTOR3 previousDistance = ObjectDistance(Obj1_centerPoint_previous, Obj2_centerPoint_previous);
+	D3DXVECTOR3 currentDistance = ObjectDistance(Obj1_centerPoint_current, Obj2_centerPoint_current);
+
+
+	if(currentDistance.x < previousDistance.x || currentDistance.y < previousDistance.y || currentDistance.z < previousDistance.z)
+	{
+		//The two objects have moved closer together
+
+		D3DXVECTOR3 Obj1_movement = ObjectDistance(Obj1_centerPoint_previous, Obj1_centerPoint_current);	//How far object 1 moved during the last time interval
+		D3DXVECTOR3 Obj2_movement = ObjectDistance(Obj2_centerPoint_previous, Obj2_centerPoint_current);	//How far object 2 moved during the last time interval
+	}
+	else
+	{
+		//The two objects are either at the same distance as the previous coordinate, or further apart, so no testing is needed
+		return false;
+	}
 }
 
 
