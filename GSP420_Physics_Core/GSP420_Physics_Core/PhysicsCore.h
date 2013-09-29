@@ -94,13 +94,12 @@ struct RayCastContact
 
 	
 
+extern const float GRAVITY = -6.8f;	
+extern const float FRICTION = 0.5f;	//friction coefficient that may need changed after testing	
 
 class PhysicsCore
 {
 public:
-	const double GRAVITY = -6.8f;	
-	const double FRICTION = 0.5f;	//friction coefficient that may need changed after testing	
-
 	D3DXVECTOR3 velocity;
 	D3DXVECTOR3 acceleration;
 

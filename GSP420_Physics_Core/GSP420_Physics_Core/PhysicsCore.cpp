@@ -20,8 +20,8 @@ void PhysicsCore::Accelerate(float delta_Time)
 	*	Determines the new velocity by adding the current
 	*	velocity to current acceleration*delta time
 	******************************************************/
-	D3DXVECTOR3 max_Velocity = D3DXVECTOR3(5.0f, 5.0f, 0.0f);
-	D3DXVECTOR3 max_Acceleration = D3DXVECTOR3(float(-GRAVITY), float(-GRAVITY), 0.0f);
+	D3DXVECTOR3 max_Velocity = D3DXVECTOR3(5.0f, 5.0f, 5.0f);
+	D3DXVECTOR3 max_Acceleration = D3DXVECTOR3(-GRAVITY, -GRAVITY, -GRAVITY);
 	D3DXVECTOR3 cur_Acceleration;
 	D3DXVECTOR3 cur_Velocity;
 	D3DXVECTOR3 new_Velocity;
