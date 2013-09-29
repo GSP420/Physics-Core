@@ -58,8 +58,8 @@ bool PhysicsCollision::ContinuousCollisionDetection(D3DXVECTOR3 Obj1_centerPoint
 	D3DXVECTOR3 Obj1_maxPoint_current = Obj1_centerPoint_current + Obj1_extent;
 
 	//Calculate the change in min and max positions between previous and current time steps
-	D3DXVECTOR Obj1_minPoint_movement = Obj1_minPoint_current - Obj1_minPoint_previous;
-	D3DXVECTOR Obj1_maxPoint_movement = Obj1_maxPoint_current - Obj1_maxPoint_previous;
+	D3DXVECTOR3 Obj1_minPoint_movement = Obj1_minPoint_current - Obj1_minPoint_previous;
+	D3DXVECTOR3 Obj1_maxPoint_movement = Obj1_maxPoint_current - Obj1_maxPoint_previous;
 
 
 	//Calculate min and max points of object 2 for previous and current positions
@@ -75,9 +75,10 @@ bool PhysicsCollision::ContinuousCollisionDetection(D3DXVECTOR3 Obj1_centerPoint
 
 
 	//Calculate the change in distance between objects along each axis
-	D3DXVECTOR3 delta_x_distance = currentDistance.x - previousDistance.x;
-	D3DXVECTOR3 delta_y_distance = currentDistance.y - previousDistance.y;
-	D3DXVECTOR3 delta_z_distance = currentDistance.z - previousDistance.z;
+	D3DXVECTOR3 delta_distance;
+	delta_distance.x = currentDistance.x - previousDistance.x;
+	delta_distance.y = currentDistance.y - previousDistance.y;
+	delta_distance.z = currentDistance.z - previousDistance.z;
 
 	if(currentDistance.x < previousDistance.x || currentDistance.y < previousDistance.y || currentDistance.z < previousDistance.z)
 	{
@@ -86,14 +87,14 @@ bool PhysicsCollision::ContinuousCollisionDetection(D3DXVECTOR3 Obj1_centerPoint
 		D3DXVECTOR3 Obj1_movement = ObjectDistance(Obj1_centerPoint_previous, Obj1_centerPoint_current);	//How far object 1 moved during the last time interval
 		D3DXVECTOR3 Obj2_movement = ObjectDistance(Obj2_centerPoint_previous, Obj2_centerPoint_current);	//How far object 2 moved during the last time interval
 
-		if(abs(delta_x_distance) >= abs(delta_y_distance) && abs(delta_x_distance) >= abs(delta_z_distance))
+		if(abs(delta_distance.x) >= abs(delta_distance.y) && abs(delta_distance.x) >= abs(delta_distance.z))
 		{
 			//Greater change along x axis
 			//Left & right faces are the fastest approaching faces
 		}
 		else
 		{
-			if(abs(delta_y_distance) >= abs(delta_x_distance) && abs(delta_y_distance) >= abs(delta_z_distance))
+			if(abs(delta_distance.y) >= abs(delta_distance.x) && abs(delta_distance.y) >= abs(delta_distance.z))
 			{
 				//Greater change along y axis
 				//Top & bottom faces are the fastest approaching faces
