@@ -24,6 +24,160 @@ D3DXVECTOR3 PhysicsCollision::ObjectDistance(D3DXVECTOR3 Obj1, D3DXVECTOR3 Obj2)
 	return(dist);
 }
 
+bool PhysicsCollision::CCD(D3DXVECTOR2 Obj1_centerPoint_current, D3DXVECTOR2 Obj1_centerPoint_future, D3DXVECTOR2 Obj1_extent,
+							D3DXVECTOR2 Obj2_centerPoint_current, D3DXVECTOR2 Obj2_centerPoint_future, D3DXVECTOR2 Obj2_extent,
+							float deltaTime, float &timeOfImpact)
+{
+	struct CCD_line
+	{
+		//Start and ending points of the line
+		D3DXVECTOR2 currentPoint;
+		D3DXVECTOR2 futurePoint;
+
+		//point-slope formula:		m = (y2 - y1) / (x2 - x1)
+		float slope;
+
+		float calculateSlope()
+		{
+			return (futurePoint.y - currentPoint.y) / (futurePoint.x - currentPoint.x);
+		}
+	};
+
+	//Object 1 current minPoint and maxPoint:
+	D3DXVECTOR2 Obj1_minPoint_current = Obj1_centerPoint_current - Obj1_extent;
+	D3DXVECTOR2 Obj1_maxPoint_current = Obj1_centerPoint_current + Obj1_extent;
+
+	//Object 1 future minPoint and maxPoint:
+	D3DXVECTOR2 Obj1_minPoint_future = Obj1_centerPoint_future - Obj1_extent;
+	D3DXVECTOR2 Obj1_maxPoint_future = Obj1_centerPoint_future + Obj1_extent;
+
+	//Object 2 current minPoint and maxPoint:
+	D3DXVECTOR2 Obj2_minPoint_current = Obj2_centerPoint_current - Obj2_extent;
+	D3DXVECTOR2 Obj2_maxPoint_current = Obj2_centerPoint_current + Obj2_extent;
+
+	//Object 2 future minPoint and maxPoint:
+	D3DXVECTOR2 Obj2_minPoint_future = Obj2_centerPoint_future - Obj2_extent;
+	D3DXVECTOR2 Obj2_maxPoint_future = Obj2_centerPoint_future + Obj2_extent;
+
+	/*
+		(minPoint.x, maxPoint.y)	*-------*	(maxPoint.x, maxPoint.y)
+									|		|
+									|		|
+		(minPoint.x, minPoint.y)	*-------*	(maxPoint.x, minPoint.y)
+	*/
+
+	/*********************************
+	******		OBJECT 2		******
+	*********************************/
+	//Object 1 corners current position:
+	D3DXVECTOR2 Obj1_bottomLeft_current, Obj1_bottomRight_current, Obj1_topRight_current, Obj1_topLeft_current;
+
+	Obj1_bottomLeft_current.x, Obj1_bottomLeft_current.y			=	Obj1_minPoint_current.x, Obj1_minPoint_current.y;
+	Obj1_bottomRight_current.x, Obj1_bottomRight_current.y			=	Obj1_maxPoint_current.x, Obj1_minPoint_current.y;
+	Obj1_topRight_current.x, Obj1_topRight_current.y				=	Obj1_maxPoint_current.x, Obj1_maxPoint_current.y;
+	Obj1_topLeft_current.x, Obj1_topLeft_current.y					=	Obj1_minPoint_current.x, Obj1_maxPoint_current.y;
+
+
+	//Object 1 corners future position:
+	D3DXVECTOR2 Obj1_bottomLeft_future, Obj1_bottomRight_future, Obj1_topRight_future, Obj1_topLeft_future;
+
+	Obj1_bottomLeft_future.x, Obj1_bottomLeft_future.y				=	Obj1_minPoint_future.x, Obj1_minPoint_future.y;
+	Obj1_bottomRight_future.x, Obj1_bottomRight_future.y			=	Obj1_maxPoint_future.x, Obj1_minPoint_future.y;
+	Obj1_topRight_future.x, Obj1_topRight_future.y					=	Obj1_maxPoint_future.x, Obj1_maxPoint_future.y;
+	Obj1_topLeft_future.x, Obj1_topLeft_future.y					=	Obj1_minPoint_future.x, Obj1_maxPoint_future.y;
+
+	//Generate our lines for object 1's path
+	CCD_line Obj1_bottomLeft, Obj1_bottomRight, Obj1_topRight, Obj1_topLeft;
+
+	Obj1_bottomLeft.currentPoint, Obj1_bottomLeft.futurePoint		=	Obj1_bottomLeft_current, Obj1_bottomLeft_future;
+	Obj1_bottomRight.currentPoint, Obj1_bottomRight.futurePoint		=	Obj1_bottomRight_current, Obj1_bottomRight_future;
+	Obj1_topRight.currentPoint, Obj1_topRight.futurePoint			=	Obj1_topRight_current, Obj1_topRight_future;
+	Obj1_topLeft.currentPoint, Obj1_topLeft.futurePoint				=	Obj1_topLeft_current, Obj1_topLeft_future;
+
+	//Calculate the slopes of the lines
+	Obj1_bottomLeft.slope = Obj1_bottomLeft.calculateSlope();
+	Obj1_bottomRight.slope = Obj1_bottomRight.calculateSlope();
+	Obj1_topRight.slope = Obj1_topRight.calculateSlope();
+	Obj1_topLeft.slope = Obj1_topLeft.calculateSlope();
+
+	/*********************************
+	******		OBJECT 2		******
+	*********************************/
+	//Object 2 corners current position:
+	D3DXVECTOR2 Obj2_bottomLeft_current, Obj2_bottomRight_current, Obj2_topRight_current, Obj2_topLeft_current;
+
+	Obj2_bottomLeft_current.x, Obj2_bottomLeft_current.y			=	Obj2_minPoint_current.x, Obj2_minPoint_current.y;
+	Obj2_bottomRight_current.x, Obj2_bottomRight_current.y			=	Obj2_maxPoint_current.x, Obj2_minPoint_current.y;
+	Obj2_topRight_current.x, Obj2_topRight_current.y				=	Obj2_maxPoint_current.x, Obj2_maxPoint_current.y;
+	Obj2_topLeft_current.x, Obj2_topLeft_current.y					=	Obj2_minPoint_current.x, Obj2_maxPoint_current.y;
+
+
+	//Object 2 corners future position:
+	D3DXVECTOR2 Obj2_bottomLeft_future, Obj2_bottomRight_future, Obj2_topRight_future, Obj2_topLeft_future;
+
+	Obj2_bottomLeft_future.x, Obj2_bottomLeft_future.y				=	Obj2_minPoint_future.x, Obj2_minPoint_future.y;
+	Obj2_bottomRight_future.x, Obj2_bottomRight_future.y			=	Obj2_maxPoint_future.x, Obj2_minPoint_future.y;
+	Obj2_topRight_future.x, Obj2_topRight_future.y					=	Obj2_maxPoint_future.x, Obj2_maxPoint_future.y;
+	Obj2_topLeft_future.x, Obj2_topLeft_future.y					=	Obj2_minPoint_future.x, Obj2_maxPoint_future.y;
+
+	//Generate our lines for object 2's path
+	CCD_line Obj2_bottomLeft, Obj2_bottomRight, Obj2_topRight, Obj2_topLeft;
+
+	Obj2_bottomLeft.currentPoint, Obj2_bottomLeft.futurePoint		=	Obj2_bottomLeft_current, Obj2_bottomLeft_future;
+	Obj2_bottomRight.currentPoint, Obj2_bottomRight.futurePoint		=	Obj2_bottomRight_current, Obj2_bottomRight_future;
+	Obj2_topRight.currentPoint, Obj2_topRight.futurePoint			=	Obj2_topRight_current, Obj2_topRight_future;
+	Obj2_topLeft.currentPoint, Obj2_topLeft.futurePoint				=	Obj2_topLeft_current, Obj2_topLeft_future;
+
+	//Calculate the slopes of the lines
+	Obj1_bottomLeft.slope = Obj1_bottomLeft.calculateSlope();
+	Obj1_bottomRight.slope = Obj1_bottomRight.calculateSlope();
+	Obj1_topRight.slope = Obj1_topRight.calculateSlope();
+	Obj1_topLeft.slope = Obj1_topLeft.calculateSlope();
+
+
+
+	//Now group all of the lines from object 1 into a list
+	list<CCD_line> Obj1_lines;
+
+	Obj1_lines.push_back(Obj1_bottomLeft);
+	Obj1_lines.push_back(Obj1_bottomRight);
+	Obj1_lines.push_back(Obj1_topRight);
+	Obj1_lines.push_back(Obj1_topLeft);
+
+	list<CCD_line>::iterator i = Obj1_lines.begin();
+
+
+	//And group all of the lines from object 2 into a separate list
+	list<CCD_line> Obj2_lines;
+
+	Obj1_lines.push_back(Obj1_bottomLeft);
+	Obj1_lines.push_back(Obj1_bottomRight);
+	Obj1_lines.push_back(Obj1_topRight);
+	Obj1_lines.push_back(Obj1_topLeft);
+
+	list<CCD_line>::iterator j = Obj2_lines.begin();
+
+	//Loop through the lines in object 1
+	while(i != Obj1_lines.end())
+	{
+		//Loop through the lines in object 2 for each line in object 1
+		while(j != Obj2_lines.end())
+		{
+			if(i->slope == j->slope)
+			{
+				//Lines are parallel, do nothing
+			}
+			else
+			{
+				//slope intercept form equation of a line:		y = mx + b
+				//TODO: SET THE TWO EQUATIONS EQUAL TO EACH OTHER AND SOLVE FOR X AND Y TO GET INTERCEPT POINT
+			}
+			j++;	//increment Object 2 line list
+		}
+		i++;	//increment Object 1 line list
+	}
+}
+
 
 bool PhysicsCollision::ContinuousCollisionDetection(D3DXVECTOR3 Obj1_centerPoint_previous, D3DXVECTOR3 Obj1_centerPoint_current, D3DXVECTOR3 Obj1_extent, 
 													D3DXVECTOR3 Obj2_centerPoint_previous, D3DXVECTOR3 Obj2_centerPoint_current, D3DXVECTOR3 Obj2_extent,
