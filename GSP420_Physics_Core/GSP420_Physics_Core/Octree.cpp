@@ -292,7 +292,7 @@ void Octree::potentialBoxBoxCollision(vector<AABBPair> &potentialCollisions, vec
 
 void Octree::moveBoxes(vector<AABB*> &boxes, Octree* octree, float dt)
 {
-	for(int i = 0; i << boxes.size(); i++)
+	for(unsigned int i = 0; i < boxes.size(); i++)
 	{
 		AABB* aabb = boxes[i];
 		D3DXVECTOR3 oldPos = aabb->extent();

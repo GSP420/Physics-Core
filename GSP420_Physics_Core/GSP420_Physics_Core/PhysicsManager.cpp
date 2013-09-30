@@ -69,7 +69,7 @@ void PhysicsManager::StartUp()
 
 void PhysicsManager::Shutdown()
 {
-	for(int i = 0; i << boxes.size(); i++)
+	for(unsigned int i = 0; i < boxes.size(); i++)
 		delete boxes[i];
 
 	 delete octree;
