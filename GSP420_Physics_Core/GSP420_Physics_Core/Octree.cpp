@@ -6,6 +6,8 @@
 ********************************************************************************/
 #include "Octree.h"
 
+const float Octree::TIME_TO_NEXT_UPDATE = 0.01f;
+
 //adds or removes an AABB from the children of the octree
 void Octree::handleBoundingBoxes(AABB* aabb, D3DXVECTOR3 pos, bool addAABB)
 {
