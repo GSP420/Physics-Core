@@ -24,8 +24,8 @@ D3DXVECTOR3 PhysicsCollision::ObjectDistance(D3DXVECTOR3 Obj1, D3DXVECTOR3 Obj2)
 	return(dist);
 }
 
-bool PhysicsCollision::CCD(D3DXVECTOR2 Obj1_centerPoint_current, D3DXVECTOR2 Obj1_centerPoint_future, D3DXVECTOR2 Obj1_extent,
-							D3DXVECTOR2 Obj2_centerPoint_current, D3DXVECTOR2 Obj2_centerPoint_future, D3DXVECTOR2 Obj2_extent,
+bool PhysicsCollision::CCD(D3DXVECTOR2 Obj1_centerPoint_current, D3DXVECTOR2 Obj1_centerPoint_future, D3DXVECTOR2 Obj1_extent, D3DXVECTOR2 Obj1_velocity,
+							D3DXVECTOR2 Obj2_centerPoint_current, D3DXVECTOR2 Obj2_centerPoint_future, D3DXVECTOR2 Obj2_extent,	D3DXVECTOR2 Obj2_velicty,
 							float deltaTime, float &timeOfImpact)
 {
 	struct CCD_line
@@ -42,23 +42,41 @@ bool PhysicsCollision::CCD(D3DXVECTOR2 Obj1_centerPoint_current, D3DXVECTOR2 Obj
 			return (futurePoint.y - currentPoint.y) / (futurePoint.x - currentPoint.x);
 		}
 
-		D3DXVECTOR2 getCurrent()
-		{
-			return currentPoint;
-		}
+		int lineID;
 
-		D3DXVECTOR2 getFuture()
-		{
-			return futurePoint;
-		}
+		/*********************************
+		*					Object 1
+		*	 ___________________________
+		*	|___________________________|
+		*	|LINE #		|	ID #		|
+		*	|___________|_______________|
+		*	|bottomLeft	|	0			|
+		*	|bottomRight|	1			|
+		*	|topRight	|	2			|
+		*	|topLeft	|	3			|
+		*	|___________|_______________|
+		*********************************/
+
+		/*********************************
+		*					Object 2
+		*	 ___________________________
+		*	|___________________________|
+		*	|LINE #		|	ID #		|
+		*	|___________|_______________|
+		*	|bottomLeft	|	4			|
+		*	|bottomRight|	5			|
+		*	|topRight	|	6			|
+		*	|topLeft	|	7			|
+		*	|___________|_______________|
+		*********************************/
 	};
 
 	struct CCD_intersection
 	{
 		D3DXVECTOR2 intersectionPoint;
 
-		int lineOne;
-		int lineTwo;
+		int lineOneID;
+		int lineTwoID;
 
 		/*********************************
 		*					Object 1
@@ -138,6 +156,11 @@ bool PhysicsCollision::CCD(D3DXVECTOR2 Obj1_centerPoint_current, D3DXVECTOR2 Obj
 	Obj1_topRight.currentPoint, Obj1_topRight.futurePoint			=	Obj1_topRight_current, Obj1_topRight_future;
 	Obj1_topLeft.currentPoint, Obj1_topLeft.futurePoint				=	Obj1_topLeft_current, Obj1_topLeft_future;
 
+	Obj1_bottomLeft.lineID	= 0;
+	Obj1_bottomRight.lineID = 1;
+	Obj1_topRight.lineID	= 2;
+	Obj1_topLeft.lineID		= 3;
+
 	//Calculate the slopes of the lines
 	Obj1_bottomLeft.slope = Obj1_bottomLeft.calculateSlope();
 	Obj1_bottomRight.slope = Obj1_bottomRight.calculateSlope();
@@ -172,6 +195,11 @@ bool PhysicsCollision::CCD(D3DXVECTOR2 Obj1_centerPoint_current, D3DXVECTOR2 Obj
 	Obj2_topRight.currentPoint, Obj2_topRight.futurePoint			=	Obj2_topRight_current, Obj2_topRight_future;
 	Obj2_topLeft.currentPoint, Obj2_topLeft.futurePoint				=	Obj2_topLeft_current, Obj2_topLeft_future;
 
+	Obj2_bottomLeft.lineID	= 4;
+	Obj2_bottomRight.lineID = 5;
+	Obj2_topRight.lineID	= 6;
+	Obj2_topLeft.lineID		= 7;
+
 	//Calculate the slopes of the lines
 	Obj1_bottomLeft.slope = Obj1_bottomLeft.calculateSlope();
 	Obj1_bottomRight.slope = Obj1_bottomRight.calculateSlope();
@@ -201,6 +229,11 @@ bool PhysicsCollision::CCD(D3DXVECTOR2 Obj1_centerPoint_current, D3DXVECTOR2 Obj
 
 	list<CCD_line>::iterator j = Obj2_lines.begin();
 
+
+
+	//list to hold the resulting intersection point information
+	list<CCD_intersection> intersections;
+
 	//Loop through the lines in object 1
 	while(i != Obj1_lines.end())
 	{
@@ -229,11 +262,82 @@ bool PhysicsCollision::CCD(D3DXVECTOR2 Obj1_centerPoint_current, D3DXVECTOR2 Obj
 
 				//point of intersection:	(intercept_x, intercept_y)
 
-				//TODO: USE THIS INFORMATION =P
+				//Temp intersection object to hold our calculated information
+				CCD_intersection thisIntersection;
+
+				//Store the intersection point coordinates
+				thisIntersection.intersectionPoint.x, thisIntersection.intersectionPoint.y = intercept_x, intercept_y;
+
+				//Transfer each line's ID to the intersection object
+				thisIntersection.lineOneID = i->lineID;
+				thisIntersection.lineTwoID = j->lineID;
+
+				//Add the intersection object to the intersections list
+				intersections.push_back(thisIntersection);
 			}
 			j++;	//increment Object 2 line list
 		}
+
+
+		j = Obj2_lines.begin();	//Reset the second line list to the beginning
 		i++;	//increment Object 1 line list
+	}
+
+
+	//Now determine which intersection point yields the intersection with the shortest time
+	list<CCD_intersection>::iterator it = intersections.begin();
+
+	//Set intersection time to the highest possible value
+	float intersectionTime = FLT_MAX;
+
+
+	while(it != intersections.end())
+	{
+		if(it->lineOneID == 0)
+		{
+			//bottomLeft line
+			if(it->lineTwoID == 4)
+			{
+				//bottomLeft to bottomLeft intersection
+			}
+			else
+			{
+				if(it->lineTwoID == 5)
+				{
+					//bottomLeft to bottomRight intersection
+				}
+				else
+				{
+					if(it->lineTwoID == 6)
+					{
+						//bottomLeft to topRight intersection
+					}
+					else
+					{
+						//bottomLeft to topLeft intersection
+					}
+				}
+			}
+		}
+		else
+		{
+			if(it->lineOneID == 1)
+			{
+				//bottomRight line
+			}
+			else
+			{
+				if(it->lineOneID == 2)
+				{
+					//topRight line
+				}
+				else
+				{
+					//topLeft line
+
+				}
+			}
+		}
 	}
 }
 
