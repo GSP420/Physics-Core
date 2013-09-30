@@ -1,5 +1,7 @@
 #include "PhysicsCore.h"
 
+const float PhysicsCore::GRAVITY = -6.8f;
+const float PhysicsCore::FRICTION = 0.5f;
 
 PhysicsCore::PhysicsCore(void)
 {
