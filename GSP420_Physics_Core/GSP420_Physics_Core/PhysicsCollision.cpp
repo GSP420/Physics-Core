@@ -25,7 +25,7 @@ D3DXVECTOR3 PhysicsCollision::ObjectDistance(D3DXVECTOR3 Obj1, D3DXVECTOR3 Obj2)
 }
 
 bool PhysicsCollision::CCD(D3DXVECTOR2 Obj1_centerPoint_current, D3DXVECTOR2 Obj1_centerPoint_future, D3DXVECTOR2 Obj1_extent, D3DXVECTOR2 Obj1_velocity,
-							D3DXVECTOR2 Obj2_centerPoint_current, D3DXVECTOR2 Obj2_centerPoint_future, D3DXVECTOR2 Obj2_extent,	D3DXVECTOR2 Obj2_velicty,
+							D3DXVECTOR2 Obj2_centerPoint_current, D3DXVECTOR2 Obj2_centerPoint_future, D3DXVECTOR2 Obj2_extent,	D3DXVECTOR2 Obj2_velocity,
 							float deltaTime, float &timeOfImpact)
 {
 	struct CCD_line
@@ -104,6 +104,8 @@ bool PhysicsCollision::CCD(D3DXVECTOR2 Obj1_centerPoint_current, D3DXVECTOR2 Obj
 		*	|___________|_______________|
 		*********************************/
 	};
+
+	bool willCollide = false;
 
 	//Object 1 current minPoint and maxPoint:
 	D3DXVECTOR2 Obj1_minPoint_current = Obj1_centerPoint_current - Obj1_extent;
@@ -262,18 +264,29 @@ bool PhysicsCollision::CCD(D3DXVECTOR2 Obj1_centerPoint_current, D3DXVECTOR2 Obj
 
 				//point of intersection:	(intercept_x, intercept_y)
 
-				//Temp intersection object to hold our calculated information
-				CCD_intersection thisIntersection;
 
-				//Store the intersection point coordinates
-				thisIntersection.intersectionPoint.x, thisIntersection.intersectionPoint.y = intercept_x, intercept_y;
+				if((intercept_x < i->currentPoint.x && intercept_y < i->currentPoint.y) || (intercept_x > i->futurePoint.x && intercept_y > i->futurePoint.y))
+				{
+					//intercept point is outside the end points of the line segment, so this intersection isn't important
+				}
+				else
+				{
+					//We found an intersection point within the end points of one of our line segments, so there will be a collision 
+					willCollide = true;
 
-				//Transfer each line's ID to the intersection object
-				thisIntersection.lineOneID = i->lineID;
-				thisIntersection.lineTwoID = j->lineID;
+					//Temp intersection object to hold our calculated information
+					CCD_intersection thisIntersection;
 
-				//Add the intersection object to the intersections list
-				intersections.push_back(thisIntersection);
+					//Store the intersection point coordinates
+					thisIntersection.intersectionPoint.x, thisIntersection.intersectionPoint.y = intercept_x, intercept_y;
+
+					//Transfer each line's ID to the intersection object
+					thisIntersection.lineOneID = i->lineID;
+					thisIntersection.lineTwoID = j->lineID;
+
+					//Add the intersection object to the intersections list
+					intersections.push_back(thisIntersection);
+				}
 			}
 			j++;	//increment Object 2 line list
 		}
@@ -288,56 +301,378 @@ bool PhysicsCollision::CCD(D3DXVECTOR2 Obj1_centerPoint_current, D3DXVECTOR2 Obj
 	list<CCD_intersection>::iterator it = intersections.begin();
 
 	//Set intersection time to the highest possible value
-	float intersectionTime = FLT_MAX;
+	float intersectionTime_x = FLT_MAX;
+	float intersectionTime_y = FLT_MAX;
+	
+	float Obj1_x_speed = Obj1_velocity.x / deltaTime;
+	float Obj1_y_speed = Obj1_velocity.y / deltaTime;
 
+	float Obj2_x_speed = Obj2_velocity.x / deltaTime;
+	float Obj2_y_speed = Obj2_velocity.y / deltaTime;
+
+	float x_distance, y_distance;
 
 	while(it != intersections.end())
 	{
 		if(it->lineOneID == 0)
 		{
+
 			//bottomLeft line
 			if(it->lineTwoID == 4)
 			{
 				//bottomLeft to bottomLeft intersection
-			}
-			else
-			{
-				if(it->lineTwoID == 5)
-				{
-					//bottomLeft to bottomRight intersection
-				}
-				else
-				{
-					if(it->lineTwoID == 6)
-					{
-						//bottomLeft to topRight intersection
-					}
-					else
-					{
-						//bottomLeft to topLeft intersection
-					}
-				}
-			}
-		}
-		else
-		{
-			if(it->lineOneID == 1)
-			{
-				//bottomRight line
-			}
-			else
-			{
-				if(it->lineOneID == 2)
-				{
-					//topRight line
-				}
-				else
-				{
-					//topLeft line
+				x_distance = min(abs(it->intersectionPoint.x - Obj1_bottomLeft.currentPoint.x), abs(it->intersectionPoint.x - Obj2_bottomLeft.currentPoint.x));
+				y_distance = min(abs(it->intersectionPoint.y - Obj1_bottomLeft.currentPoint.y), abs(it->intersectionPoint.y - Obj2_bottomLeft.currentPoint.y));
 
+				float x_traversal = x_distance / Obj1_x_speed;
+				float y_traversal = y_distance / Obj1_y_speed;
+
+				if(intersectionTime_x > x_traversal)
+				{
+					//New fastest intersection time
+					intersectionTime_x = x_traversal;
+				}
+				if(intersectionTime_y > y_traversal)
+				{
+					//New fastest intersection time
+					intersectionTime_y = y_traversal;
 				}
 			}
+			else if(it->lineTwoID == 5)
+			{
+				//bottomLeft to bottomRight intersection
+				x_distance = min(abs(it->intersectionPoint.x - Obj1_bottomLeft.currentPoint.x), abs(it->intersectionPoint.x - Obj2_bottomRight.currentPoint.x));
+				y_distance = min(abs(it->intersectionPoint.y - Obj1_bottomLeft.currentPoint.y), abs(it->intersectionPoint.y - Obj2_bottomRight.currentPoint.y));
+
+				float x_traversal = x_distance / Obj1_x_speed;
+				float y_traversal = y_distance / Obj1_y_speed;
+
+				if(intersectionTime_x > x_traversal)
+				{
+					//New fastest intersection time
+					intersectionTime_x = x_traversal;
+				}
+				if(intersectionTime_y > y_traversal)
+				{
+					//New fastest intersection time
+					intersectionTime_y = y_traversal;
+				}
+			}
+			else if(it->lineTwoID == 6)
+			{
+				//bottomLeft to topRight intersection
+				x_distance = min(abs(it->intersectionPoint.x - Obj1_bottomLeft.currentPoint.x), abs(it->intersectionPoint.x - Obj2_topRight.currentPoint.x));
+				y_distance = min(abs(it->intersectionPoint.y - Obj1_bottomLeft.currentPoint.y), abs(it->intersectionPoint.y - Obj2_topRight.currentPoint.y));
+
+				float x_traversal = x_distance / Obj1_x_speed;
+				float y_traversal = y_distance / Obj1_y_speed;
+
+				if(intersectionTime_x > x_traversal)
+				{
+					//New fastest intersection time
+					intersectionTime_x = x_traversal;
+				}
+				if(intersectionTime_y > y_traversal)
+				{
+					//New fastest intersection time
+					intersectionTime_y = y_traversal;
+				}
+			}
+			else if(it->lineTwoID == 7)
+			{
+				//bottomLeft to topLeft intersection
+				x_distance = min(abs(it->intersectionPoint.x - Obj1_bottomLeft.currentPoint.x), abs(it->intersectionPoint.x - Obj2_topLeft.currentPoint.x));
+				y_distance = min(abs(it->intersectionPoint.y - Obj1_bottomLeft.currentPoint.y), abs(it->intersectionPoint.y - Obj2_topLeft.currentPoint.y));
+
+				float x_traversal = x_distance / Obj1_x_speed;
+				float y_traversal = y_distance / Obj1_y_speed;
+
+				if(intersectionTime_x > x_traversal)
+				{
+					//New fastest intersection time
+					intersectionTime_x = x_traversal;
+				}
+				if(intersectionTime_y > y_traversal)
+				{
+					//New fastest intersection time
+					intersectionTime_y = y_traversal;
+				}
+			}
+
+
 		}
+		else if(it->lineOneID == 1)
+		{
+
+			//bottomRight line
+			if(it->lineTwoID == 4)
+			{
+				//bottomRight to bottomLeft intersection
+				x_distance = min(abs(it->intersectionPoint.x - Obj1_bottomRight.currentPoint.x), abs(it->intersectionPoint.x - Obj2_bottomLeft.currentPoint.x));
+				y_distance = min(abs(it->intersectionPoint.y - Obj1_bottomRight.currentPoint.y), abs(it->intersectionPoint.y - Obj2_bottomLeft.currentPoint.y));
+
+				float x_traversal = x_distance / Obj1_x_speed;
+				float y_traversal = y_distance / Obj1_y_speed;
+
+				if(intersectionTime_x > x_traversal)
+				{
+					//New fastest intersection time
+					intersectionTime_x = x_traversal;
+				}
+				if(intersectionTime_y > y_traversal)
+				{
+					//New fastest intersection time
+					intersectionTime_y = y_traversal;
+				}
+			}
+			else if(it->lineTwoID == 5)
+			{
+				//bottomRight to bottomRight intersection
+				x_distance = min(abs(it->intersectionPoint.x - Obj1_bottomRight.currentPoint.x), abs(it->intersectionPoint.x - Obj2_bottomRight.currentPoint.x));
+				y_distance = min(abs(it->intersectionPoint.y - Obj1_bottomRight.currentPoint.y), abs(it->intersectionPoint.y - Obj2_bottomRight.currentPoint.y));
+
+				float x_traversal = x_distance / Obj1_x_speed;
+				float y_traversal = y_distance / Obj1_y_speed;
+
+				if(intersectionTime_x > x_traversal)
+				{
+					//New fastest intersection time
+					intersectionTime_x = x_traversal;
+				}
+				if(intersectionTime_y > y_traversal)
+				{
+					//New fastest intersection time
+					intersectionTime_y = y_traversal;
+				}
+			}
+			else if(it->lineTwoID == 6)
+			{
+				//bottomRight to topRight intersection
+				x_distance = min(abs(it->intersectionPoint.x - Obj1_bottomRight.currentPoint.x), abs(it->intersectionPoint.x - Obj2_topRight.currentPoint.x));
+				y_distance = min(abs(it->intersectionPoint.y - Obj1_bottomRight.currentPoint.y), abs(it->intersectionPoint.y - Obj2_topRight.currentPoint.y));
+
+				float x_traversal = x_distance / Obj1_x_speed;
+				float y_traversal = y_distance / Obj1_y_speed;
+
+				if(intersectionTime_x > x_traversal)
+				{
+					//New fastest intersection time
+					intersectionTime_x = x_traversal;
+				}
+				if(intersectionTime_y > y_traversal)
+				{
+					//New fastest intersection time
+					intersectionTime_y = y_traversal;
+				}
+			}
+			else if(it->lineTwoID == 7)
+			{
+				//bottomRight to topLeft intersection
+				x_distance = min(abs(it->intersectionPoint.x - Obj1_bottomRight.currentPoint.x), abs(it->intersectionPoint.x - Obj2_topLeft.currentPoint.x));
+				y_distance = min(abs(it->intersectionPoint.y - Obj1_bottomRight.currentPoint.y), abs(it->intersectionPoint.y - Obj2_topLeft.currentPoint.y));
+
+				float x_traversal = x_distance / Obj1_x_speed;
+				float y_traversal = y_distance / Obj1_y_speed;
+
+				if(intersectionTime_x > x_traversal)
+				{
+					//New fastest intersection time
+					intersectionTime_x = x_traversal;
+				}
+				if(intersectionTime_y > y_traversal)
+				{
+					//New fastest intersection time
+					intersectionTime_y = y_traversal;
+				}
+			}
+
+		}
+		else if(it->lineOneID == 2)
+		{
+
+			//topRight line
+			if(it->lineTwoID == 4)
+			{
+				//topRight to bottomLeft intersection
+				x_distance = min(abs(it->intersectionPoint.x - Obj1_topRight.currentPoint.x), abs(it->intersectionPoint.x - Obj2_bottomLeft.currentPoint.x));
+				y_distance = min(abs(it->intersectionPoint.y - Obj1_topRight.currentPoint.y), abs(it->intersectionPoint.y - Obj2_bottomLeft.currentPoint.y));
+
+				float x_traversal = x_distance / Obj1_x_speed;
+				float y_traversal = y_distance / Obj1_y_speed;
+
+				if(intersectionTime_x > x_traversal)
+				{
+					//New fastest intersection time
+					intersectionTime_x = x_traversal;
+				}
+				if(intersectionTime_y > y_traversal)
+				{
+					//New fastest intersection time
+					intersectionTime_y = y_traversal;
+				}
+			}
+			else if(it->lineTwoID == 5)
+			{
+				//topRight to bottomRight intersection
+				x_distance = min(abs(it->intersectionPoint.x - Obj1_topRight.currentPoint.x), abs(it->intersectionPoint.x - Obj2_bottomRight.currentPoint.x));
+				y_distance = min(abs(it->intersectionPoint.y - Obj1_topRight.currentPoint.y), abs(it->intersectionPoint.y - Obj2_bottomRight.currentPoint.y));
+
+				float x_traversal = x_distance / Obj1_x_speed;
+				float y_traversal = y_distance / Obj1_y_speed;
+
+				if(intersectionTime_x > x_traversal)
+				{
+					//New fastest intersection time
+					intersectionTime_x = x_traversal;
+				}
+				if(intersectionTime_y > y_traversal)
+				{
+					//New fastest intersection time
+					intersectionTime_y = y_traversal;
+				}
+			}
+			else if(it->lineTwoID == 6)
+			{
+				//topRight to topRight intersection
+				x_distance = min(abs(it->intersectionPoint.x - Obj1_topRight.currentPoint.x), abs(it->intersectionPoint.x - Obj2_topRight.currentPoint.x));
+				y_distance = min(abs(it->intersectionPoint.y - Obj1_topRight.currentPoint.y), abs(it->intersectionPoint.y - Obj2_topRight.currentPoint.y));
+
+				float x_traversal = x_distance / Obj1_x_speed;
+				float y_traversal = y_distance / Obj1_y_speed;
+
+				if(intersectionTime_x > x_traversal)
+				{
+					//New fastest intersection time
+					intersectionTime_x = x_traversal;
+				}
+				if(intersectionTime_y > y_traversal)
+				{
+					//New fastest intersection time
+					intersectionTime_y = y_traversal;
+				}
+			}
+			else if(it->lineTwoID == 7)
+			{
+				//topRight to topLeft intersection
+				x_distance = min(abs(it->intersectionPoint.x - Obj1_topRight.currentPoint.x), abs(it->intersectionPoint.x - Obj2_topLeft.currentPoint.x));
+				y_distance = min(abs(it->intersectionPoint.y - Obj1_topRight.currentPoint.y), abs(it->intersectionPoint.y - Obj2_topLeft.currentPoint.y));
+
+				float x_traversal = x_distance / Obj1_x_speed;
+				float y_traversal = y_distance / Obj1_y_speed;
+
+				if(intersectionTime_x > x_traversal)
+				{
+					//New fastest intersection time
+					intersectionTime_x = x_traversal;
+				}
+				if(intersectionTime_y > y_traversal)
+				{
+					//New fastest intersection time
+					intersectionTime_y = y_traversal;
+				}
+			}
+
+		}
+		else if(it->lineOneID == 3)
+		{
+
+			//topLeft line
+			if(it->lineTwoID == 4)
+			{
+				//topLeft to bottomLeft intersection
+				x_distance = min(abs(it->intersectionPoint.x - Obj1_topLeft.currentPoint.x), abs(it->intersectionPoint.x - Obj2_bottomLeft.currentPoint.x));
+				y_distance = min(abs(it->intersectionPoint.y - Obj1_topLeft.currentPoint.y), abs(it->intersectionPoint.y - Obj2_bottomLeft.currentPoint.y));
+
+				float x_traversal = x_distance / Obj1_x_speed;
+				float y_traversal = y_distance / Obj1_y_speed;
+
+				if(intersectionTime_x > x_traversal)
+				{
+					//New fastest intersection time
+					intersectionTime_x = x_traversal;
+				}
+				if(intersectionTime_y > y_traversal)
+				{
+					//New fastest intersection time
+					intersectionTime_y = y_traversal;
+				}
+			}
+			else if(it->lineTwoID == 5)
+			{
+				//topLeft to bottomRight intersection
+				x_distance = min(abs(it->intersectionPoint.x - Obj1_topLeft.currentPoint.x), abs(it->intersectionPoint.x - Obj2_bottomRight.currentPoint.x));
+				y_distance = min(abs(it->intersectionPoint.y - Obj1_topLeft.currentPoint.y), abs(it->intersectionPoint.y - Obj2_bottomRight.currentPoint.y));
+
+				float x_traversal = x_distance / Obj1_x_speed;
+				float y_traversal = y_distance / Obj1_y_speed;
+
+				if(intersectionTime_x > x_traversal)
+				{
+					//New fastest intersection time
+					intersectionTime_x = x_traversal;
+				}
+				if(intersectionTime_y > y_traversal)
+				{
+					//New fastest intersection time
+					intersectionTime_y = y_traversal;
+				}
+			}
+			else if(it->lineTwoID == 6)
+			{
+				//topLeft to topRight intersection
+				x_distance = min(abs(it->intersectionPoint.x - Obj1_topLeft.currentPoint.x), abs(it->intersectionPoint.x - Obj2_topRight.currentPoint.x));
+				y_distance = min(abs(it->intersectionPoint.y - Obj1_topLeft.currentPoint.y), abs(it->intersectionPoint.y - Obj2_topRight.currentPoint.y));
+
+				float x_traversal = x_distance / Obj1_x_speed;
+				float y_traversal = y_distance / Obj1_y_speed;
+
+				if(intersectionTime_x > x_traversal)
+				{
+					//New fastest intersection time
+					intersectionTime_x = x_traversal;
+				}
+				if(intersectionTime_y > y_traversal)
+				{
+					//New fastest intersection time
+					intersectionTime_y = y_traversal;
+				}
+			}
+			else if(it->lineTwoID == 7)
+			{
+				//topLeft to topLeft intersection
+				x_distance = min(abs(it->intersectionPoint.x - Obj1_topLeft.currentPoint.x), abs(it->intersectionPoint.x - Obj2_topLeft.currentPoint.x));
+				y_distance = min(abs(it->intersectionPoint.y - Obj1_topLeft.currentPoint.y), abs(it->intersectionPoint.y - Obj2_topLeft.currentPoint.y));
+
+				float x_traversal = x_distance / Obj1_x_speed;
+				float y_traversal = y_distance / Obj1_y_speed;
+
+				if(intersectionTime_x > x_traversal)
+				{
+					//New fastest intersection time
+					intersectionTime_x = x_traversal;
+				}
+				if(intersectionTime_y > y_traversal)
+				{
+					//New fastest intersection time
+					intersectionTime_y = y_traversal;
+				}
+			}
+
+		}
+
+		it++;
+	}
+
+	//Assign shortest intersection time to timeOfImpact
+	timeOfImpact = min(intersectionTime_x, intersectionTime_y);
+
+	if(willCollide)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
 	}
 }
 
