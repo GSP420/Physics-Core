@@ -11,6 +11,9 @@ public:
 	~PhysicsCollision(void);
 
 	D3DXVECTOR3 ObjectDistance(D3DXVECTOR3, D3DXVECTOR3);
+	bool PhysicsCollision::CCD(D3DXVECTOR2, D3DXVECTOR2, D3DXVECTOR2,
+							D3DXVECTOR2, D3DXVECTOR2, D3DXVECTOR2,
+							float, float);
 	bool ContinuousCollisionDetection(D3DXVECTOR3 Obj1_centerPoint_previous, D3DXVECTOR3 Obj1_centerPoint_current, D3DXVECTOR3 Obj1_extent, 
 													D3DXVECTOR3 Obj2_centerPoint_previous, D3DXVECTOR3 Obj2_centerPoint_current, D3DXVECTOR3 Obj2_extent,
 													float deltaTime, float &timeToImpact);
