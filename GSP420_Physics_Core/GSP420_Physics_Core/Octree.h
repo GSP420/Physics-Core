@@ -25,7 +25,7 @@ private:
 	static const int MAX_OCTREE_DEPTH = 6;			//keeps us from making to many nodes in one octree
 	static const int MIN_AABBS_PER_OCTREE = 2;		//if there is less than two then we no longer need that node
 	static const int MAX_AABBS_PER_OCTREE = 6;		//if there are more than 6 then we need to create another node
-	static const float TIME_TO_NEXT_UPDATE = 0.01f;
+	static const float TIME_TO_NEXT_UPDATE;
 
 	D3DXVECTOR3 corner1;
 	D3DXVECTOR3 corner2;
