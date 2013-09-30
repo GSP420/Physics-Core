@@ -41,6 +41,50 @@ bool PhysicsCollision::CCD(D3DXVECTOR2 Obj1_centerPoint_current, D3DXVECTOR2 Obj
 		{
 			return (futurePoint.y - currentPoint.y) / (futurePoint.x - currentPoint.x);
 		}
+
+		D3DXVECTOR2 getCurrent()
+		{
+			return currentPoint;
+		}
+
+		D3DXVECTOR2 getFuture()
+		{
+			return futurePoint;
+		}
+	};
+
+	struct CCD_intersection
+	{
+		D3DXVECTOR2 intersectionPoint;
+
+		int lineOne;
+		int lineTwo;
+
+		/*********************************
+		*					Object 1
+		*	 ___________________________
+		*	|___________________________|
+		*	|LINE #		|	ID #		|
+		*	|___________|_______________|
+		*	|bottomLeft	|	0			|
+		*	|bottomRight|	1			|
+		*	|topRight	|	2			|
+		*	|topLeft	|	3			|
+		*	|___________|_______________|
+		*********************************/
+
+		/*********************************
+		*					Object 2
+		*	 ___________________________
+		*	|___________________________|
+		*	|LINE #		|	ID #		|
+		*	|___________|_______________|
+		*	|bottomLeft	|	4			|
+		*	|bottomRight|	5			|
+		*	|topRight	|	6			|
+		*	|topLeft	|	7			|
+		*	|___________|_______________|
+		*********************************/
 	};
 
 	//Object 1 current minPoint and maxPoint:
@@ -170,7 +214,22 @@ bool PhysicsCollision::CCD(D3DXVECTOR2 Obj1_centerPoint_current, D3DXVECTOR2 Obj
 			else
 			{
 				//slope intercept form equation of a line:		y = mx + b
-				//TODO: SET THE TWO EQUATIONS EQUAL TO EACH OTHER AND SOLVE FOR X AND Y TO GET INTERCEPT POINT
+
+				//line one intercept:	b = y - mx
+				float b1 = i->currentPoint.y - (i->slope * i->currentPoint.x);
+
+				//line two intercept:	b = y - mx
+				float b2 = j->currentPoint.y - (j->slope * j->currentPoint.x);
+				
+				//x intercept coordinate formula:	x = b2-b1 / m1+m2
+				float intercept_x = (b2 - b1) / (i->slope + j->slope);
+
+				//y intercept coordinate formula:	y = mx + b
+				float intercept_y = (i->slope * i->currentPoint.x) + b1;
+
+				//point of intersection:	(intercept_x, intercept_y)
+
+				//TODO: USE THIS INFORMATION =P
 			}
 			j++;	//increment Object 2 line list
 		}
