@@ -29,9 +29,13 @@ bool PhysicsManager::detectCollision(vector<AABB*> &boxes, Octree* octree, bool 
 }
 
 
-bool PhysicsManager::continuousCollision(D3DXVECTOR3 Obj1, D3DXVECTOR3 Obj2)
+bool PhysicsManager::CCD(D3DXVECTOR2 Obj1_centerPoint_current, D3DXVECTOR2 Obj1_centerPoint_future, D3DXVECTOR2 Obj1_extent, D3DXVECTOR2 Obj1_velocity,
+							D3DXVECTOR2 Obj2_centerPoint_current, D3DXVECTOR2 Obj2_centerPoint_future, D3DXVECTOR2 Obj2_extent,	D3DXVECTOR2 Obj2_velocity,
+							float deltaTime, float &timeOfImpact)
 {
-	return collide.ContinuousCollisionDetection(Obj1, Obj2);
+	return collide.CCD(Obj1_centerPoint_current, Obj1_centerPoint_future, Obj1_extent, Obj1_velocity,
+							Obj2_centerPoint_current, Obj2_centerPoint_future, Obj2_extent,	Obj2_velocity,
+							deltaTime, timeOfImpact);
 }
 
 
