@@ -72,8 +72,17 @@ struct AABB
 		out.maxPoint = midPoint + outerPoint;
 	}
 
+	void moveTo(D3DXVECTOR3 newMinPoint, D3DXVECTOR3 newMaxPoint)
+	{
+		centerPointPrevious = this->center();
+		this->minPoint = newMinPoint;
+		this->maxPoint = newMaxPoint;
+	}
+
 	D3DXVECTOR3 minPoint;
 	D3DXVECTOR3 maxPoint;
+
+	D3DXVECTOR3 centerPointPrevious;
 
 	string ID;
 
