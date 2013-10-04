@@ -29,7 +29,7 @@ struct AABB
 {
 	//initialize to an infinitely small AABB
 	AABB():	minPoint(INFINITY, INFINITY, INFINITY),
-			maxPoint(-INFINITY, -INFINITY, -INFINITY){}
+			maxPoint(-INFINITY, -INFINITY, -INFINITY){useContinuousDetection = false;}
 
 	//function that defines the center of the AABB
 	D3DXVECTOR3 center()const
@@ -76,6 +76,8 @@ struct AABB
 	D3DXVECTOR3 maxPoint;
 
 	string ID;
+
+	bool useContinuousDetection;
 };
 
 /*************************************************************
