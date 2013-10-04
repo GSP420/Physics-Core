@@ -39,7 +39,7 @@ bool PhysicsCollision::sweptCCD(D3DXVECTOR2 boxA_centerPoint_previous, D3DXVECTO
 		return true;
 	}
 
-	//We know they weren't overlapping at thier previous positions, so let's set up for 
+	//We know they weren't overlapping at thier previous positions, so let's set up for detecting potential times of impact 
 	
 	
 	D3DXVECTOR2 displacementA = boxA_centerPoint_current - boxA_centerPoint_previous;		//Displacement of box A between previous and current positions
@@ -54,9 +54,11 @@ bool PhysicsCollision::sweptCCD(D3DXVECTOR2 boxA_centerPoint_previous, D3DXVECTO
 	D3DXVECTOR2 bMax = boxB_centerPoint_previous + boxB_extent;		//Max point of box B
 
 	//First time of overlap along x and y axes
-	D3DXVECTOR2 t0 = (0,0);
-	//Last time of overlap along 
-	D3DXVECTOR2 t1 = (1,1);
+	D3DXVECTOR2 t0;
+	t0.x, t0.y = 0, 0;
+	//Last time of overlap along x and y axes
+	D3DXVECTOR2 t1;
+	t1.x, t1.y = 1, 1;
 
 	for(int i = 0; i < 2; i++)
 	{
