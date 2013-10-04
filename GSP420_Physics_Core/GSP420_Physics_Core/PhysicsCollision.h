@@ -19,7 +19,7 @@ public:
 													D3DXVECTOR2 Obj2_velocity, float deltaTime, float &timeOfImpact);
 	bool PhysicsCollision::sweptCCD(D3DXVECTOR2 boxA_centerPoint_previous, D3DXVECTOR2 boxA_centerPoint_current, D3DXVECTOR2 boxA_extent,
 							D3DXVECTOR2 boxB_centerPoint_previous, D3DXVECTOR2 boxB_centerPoint_current, D3DXVECTOR2 boxB_extent,
-							float &timeOfImpact)
+							float &timeOfImpact);
 	bool CollisionDetection(vector<AABB*> &boxes, Octree* octree, bool test_z_axis);
 };
 
