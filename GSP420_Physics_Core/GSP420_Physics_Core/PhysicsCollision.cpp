@@ -28,6 +28,19 @@ bool PhysicsCollision::sweptCCD(D3DXVECTOR2 boxA_centerPoint_previous, D3DXVECTO
 							D3DXVECTOR2 boxB_centerPoint_previous, D3DXVECTOR2 boxB_centerPoint_current, D3DXVECTOR2 boxB_extent,
 							float &timeOfImpact)
 {
+	/******************************************************
+	*	Function Name:		sweptCCD()
+	*	Programmer:			Josh Archer
+	*
+	*	Determines if there was a collision at any point
+	*	between the previous position and current position
+	*	of two AABB's.
+	*	
+	*	Also assigns a normalized time of impact value
+	*	to pass-by-reference parameter "timeOfImpact"
+	*
+	******************************************************/
+
 	//Check if box A and box B were already overlapping in their previous positions:
 	D3DXVECTOR2 AB_separation = boxA_centerPoint_previous - boxB_centerPoint_previous;
 
