@@ -40,6 +40,7 @@ bool PhysicsCollision::sweptCCD(vector<AABB*> boxes, Octree* octree, float &time
 	******************************************************/
 
 	vector<AABBPair> bps;
+	bool collisionOccurred = false;
 
 	core._octree->potentialBoxBoxCollision(bps, boxes, octree);
 	for(unsigned int i = 0; i < bps.size(); i++) 
@@ -57,8 +58,20 @@ bool PhysicsCollision::sweptCCD(vector<AABB*> boxes, Octree* octree, float &time
 			&&	(fabs(AB_separation.z) <= fabs(boxA->extent().z + boxB->extent().z))		)
 		{
 			//The boxes were already overlapping at their previous positions
+			
+			collisionOccurred = true;
+			core._collisions->currentCollision.boxA_ID					=	boxA->ID;
+			core._collisions->currentCollision.boxB_ID					=	boxB->ID;
+			core._collisions->currentCollision.impactPoint.x			=	-FLT_MAX;
+			core._collisions->currentCollision.impactPoint.y			=	-FLT_MAX;
+			core._collisions->currentCollision.impactPoint.z			=	-FLT_MAX;
+			core._collisions->currentCollision.timeOfImpact				=	0.0f;
+			core._collisions->currentCollision.boxA_movementVector		=	boxA->center() - boxA->centerPointPrevious;
+			core._collisions->currentCollision.boxB_movementVector		=	boxB->center() - boxB->centerPointPrevious;
+			
+			core._collisions->addToList();
+
 			timeOfImpact = 0.0f;
-			return true;
 		}
 
 		//We know they weren't overlapping at thier previous positions, so let's set up for detecting potential times of impact 
@@ -168,16 +181,31 @@ bool PhysicsCollision::sweptCCD(vector<AABB*> boxes, Octree* octree, float &time
 		//An impact has only occurred if the time of first impact is less than or equal to the time of last impact
 		if(tMin <= tMax)
 		{
+			collisionOccurred = true;
+			core._collisions->currentCollision.boxA_ID					=	boxA->ID;
+			core._collisions->currentCollision.boxB_ID					=	boxB->ID;
+			core._collisions->currentCollision.impactPoint.x			=	-FLT_MAX;
+			core._collisions->currentCollision.impactPoint.y			=	-FLT_MAX;
+			core._collisions->currentCollision.impactPoint.z			=	-FLT_MAX;
+			core._collisions->currentCollision.timeOfImpact				=	tMin;
+			core._collisions->currentCollision.boxA_movementVector		=	boxA->center() - boxA->centerPointPrevious;
+			core._collisions->currentCollision.boxB_movementVector		=	boxB->center() - boxB->centerPointPrevious;
+			
+			core._collisions->addToList();
+
 			timeOfImpact = tMin;
-			return true;
-		}
-		else
-		{
-			timeOfImpact = -FLT_MAX;
-			return false;
+
 		}
 	}
-	return true;
+
+	if(collisionOccurred)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }
 
 bool PhysicsCollision::CCD(D3DXVECTOR2 Obj1_centerPoint_current, D3DXVECTOR2 Obj1_centerPoint_future, D3DXVECTOR2 Obj1_extent, D3DXVECTOR2 Obj1_velocity,
@@ -851,6 +879,7 @@ bool PhysicsCollision::CollisionDetection(vector<AABB*> &boxes, Octree* octree, 
 	******************************************************/
 
 	vector<AABBPair> bps;
+	bool collisionOccurred = false;
 
 	core._octree->potentialBoxBoxCollision(bps, boxes, octree);
 	for(unsigned int i = 0; i < bps.size(); i++) 
@@ -864,14 +893,12 @@ bool PhysicsCollision::CollisionDetection(vector<AABB*> &boxes, Octree* octree, 
 		if(shapeOne->maxPoint.x < shapeTwo->minPoint.x || shapeTwo->maxPoint.x < shapeOne->minPoint.x)
 		{
 			//The shapes' projections along the x-axis are disjoint, so the shapes are not colliding
-			return false;
 		}
 		else
 		{
 			if(shapeOne->maxPoint.y < shapeTwo->minPoint.y || shapeTwo->maxPoint.y < shapeOne->minPoint.y)
 			{
 				//The shapes' projection along the y-axis are disjoint, so the shapes are not colliding
-				return false;
 			}
 			else
 			{
@@ -881,21 +908,49 @@ bool PhysicsCollision::CollisionDetection(vector<AABB*> &boxes, Octree* octree, 
 					if(shapeOne->maxPoint.z < shapeTwo->minPoint.z || shapeTwo->maxPoint.z < shapeOne->minPoint.z)
 					{
 						//The shapes' projection along the z-axis are disjoint, so the shapes are not colliding
-						return false;
 					}
 					else
 					{
 						//The shapes' projection along all three axes are intersecting, so the shapes ARE colliding
-						return true;
+						collisionOccurred	=	true;
+
+						core._collisions->currentCollision.boxA_ID					=	shapeOne->ID;
+						core._collisions->currentCollision.boxB_ID					=	shapeTwo->ID;
+						core._collisions->currentCollision.impactPoint.x			=	-FLT_MAX;
+						core._collisions->currentCollision.impactPoint.y			=	-FLT_MAX;
+						core._collisions->currentCollision.impactPoint.z			=	-FLT_MAX;
+						core._collisions->currentCollision.boxA_movementVector		=	shapeOne->center() - shapeOne->centerPointPrevious;
+						core._collisions->currentCollision.boxB_movementVector		=	shapeTwo->center() - shapeTwo->centerPointPrevious;
+						core._collisions->currentCollision.timeOfImpact				=	-FLT_MAX;
+
+						core._collisions->addToList();
 					}
 				}
 				else
 				{
 					//Collision detection along z axis is NOT desired, and the shapes' projections along both the x and y axes are intersecting, so the shapes ARE colliding
-					return false;
+					collisionOccurred	=	true;
+
+					core._collisions->currentCollision.boxA_ID					=	shapeOne->ID;
+					core._collisions->currentCollision.boxB_ID					=	shapeTwo->ID;
+					core._collisions->currentCollision.impactPoint.x			=	-FLT_MAX;
+					core._collisions->currentCollision.impactPoint.y			=	-FLT_MAX;
+					core._collisions->currentCollision.impactPoint.z			=	-FLT_MAX;
+					core._collisions->currentCollision.boxA_movementVector		=	shapeOne->center() - shapeOne->centerPointPrevious;
+					core._collisions->currentCollision.boxB_movementVector		=	shapeTwo->center() - shapeTwo->centerPointPrevious;
+					core._collisions->currentCollision.timeOfImpact				=	-FLT_MAX;
+
+					core._collisions->addToList();
 				}
 			}
 		}
 	}//End for loop
-	return true;
+	if(collisionOccurred)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }

@@ -44,6 +44,7 @@ void PhysicsInterface::StartUp(int SCENE_SIZE)
 
 void PhysicsInterface::Update(float dt)
 {
+	float TOI;
 	core.Accelerate(dt);
 	core._octree->advance(boxes, octree, dt, timeUntilUpdate);
 
@@ -51,7 +52,14 @@ void PhysicsInterface::Update(float dt)
 	for(int i = 0; i < boxes.size(); i++)
 	{
 		//Broad phase collision detection
-		//TODO:Call CollisionDetection() function to check for collisions
+		if(collide.CollisionDetection(boxes, core._octree, true))
+		{
+			//this box collided with another box
+		}
+		else
+		{
+			//this box didnt collide with anything
+		}
 	}
 
 	//Loop through the boxes a second time for narrow phase
@@ -61,9 +69,19 @@ void PhysicsInterface::Update(float dt)
 		if(boxes[i]->useContinuousDetection)
 		{
 			//box has continuous detection toggled on, so determine if we've already found a collision for it in broad phase
-			//TODO:Call sweptCCD() function to check for collision if a collision wasn't already detected, otherwise do nothing
+			if(collide.sweptCCD(boxes, core._octree, TOI))
+			{
+				//this box collided with another box
+			}
+			else
+			{
+				//this box didnt collide with anything
+			}
 		}
 	}
+
+	//After calling update, core._collisions.collisionList will contain information about all the collisions that occurred and can be used
+	//by the designer to resolve the collisions.
 }
 
 void PhysicsInterface::Shutdown()

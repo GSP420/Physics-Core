@@ -173,6 +173,12 @@ struct collisions
 		collisionList.pop_front();
 	}
 
+	//Adds the current collision to the end of the list
+	void addToList()
+	{
+		collisionList.push_back(currentCollision);
+	}
+
 };
 
 /*************************************************************
@@ -199,6 +205,8 @@ public:
 	D3DXVECTOR3 velocity;
 	D3DXVECTOR3 acceleration;
 	Octree* _octree;
+	collisionInfo* _collisionInfo;
+	collisions* _collisions;
 
 	PhysicsCore(void);
 	~PhysicsCore(void);
