@@ -1,6 +1,6 @@
 #include "PhysicsCore.h"
 
-const float PhysicsCore::GRAVITY = -6.8f;
+const float PhysicsCore::GRAVITY = -9.8f;
 const float PhysicsCore::FRICTION = 0.5f;
 
 PhysicsCore::PhysicsCore(void)
@@ -37,9 +37,9 @@ void PhysicsCore::Accelerate(float delta_Time)
 		new_Velocity = max_Velocity;
 	if(new_Velocity < -max_Velocity)
 		new_Velocity = -max_Velocity;
-	if(cur_Acceleration > max_Acceleration)
+	if(cur_Acceleration > -max_Acceleration)
 		cur_Acceleration = max_Acceleration;
-	if(cur_Acceleration < -max_Acceleration)
+	if(cur_Acceleration < max_Acceleration)
 		cur_Acceleration = -max_Acceleration;
 
 	SetVelocity(new_Velocity);
