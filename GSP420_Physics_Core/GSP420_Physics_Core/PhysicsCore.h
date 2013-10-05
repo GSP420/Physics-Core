@@ -14,6 +14,7 @@
 #include <list>
 #include <string>
 #include <cmath>
+#include "Octree.h"
 
 using namespace std;
 
@@ -197,6 +198,7 @@ public:
 
 	D3DXVECTOR3 velocity;
 	D3DXVECTOR3 acceleration;
+	Octree* _octree;
 
 	PhysicsCore(void);
 	~PhysicsCore(void);

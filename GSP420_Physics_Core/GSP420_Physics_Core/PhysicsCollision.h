@@ -5,7 +5,7 @@
 class PhysicsCollision
 {
 public:
-	Octree* _octree;
+	PhysicsCore core;
 
 	PhysicsCollision(void);
 	~PhysicsCollision(void);

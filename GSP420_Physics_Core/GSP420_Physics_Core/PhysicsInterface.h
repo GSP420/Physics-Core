@@ -45,7 +45,7 @@ void PhysicsInterface::StartUp(int SCENE_SIZE)
 void PhysicsInterface::Update(float dt)
 {
 	core.Accelerate(dt);
-	octree->advance(boxes, octree, dt, timeUntilUpdate);
+	core._octree->advance(boxes, octree, dt, timeUntilUpdate);
 
 	//Loop through the boxes for broad phase
 	for(int i = 0; i < boxes.size(); i++)
@@ -105,4 +105,10 @@ void PhysicsInterface::setVel(D3DXVECTOR3 velocity)
 D3DXVECTOR3 PhysicsInterface::getVel()
 {
 	return core.velocity;
+}
+
+
+void PhysicsInterface::setAABB(D3DXVECTOR3 minPoint, D3DXVECTOR3 maxPoint)
+{
+	core.SetAABB(minPoint, maxPoint);	
 }
