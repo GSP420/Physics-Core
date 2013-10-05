@@ -103,10 +103,6 @@ struct RayCastContact
 	string collidable_ID;
 };
 
-	
-
-	
-
 
 class PhysicsCore
 {
@@ -128,6 +124,10 @@ public:
 	void SetVelocity(D3DXVECTOR3 vel);
 	D3DXVECTOR3 GetAcceleration();
 	void SetAcceleration(D3DXVECTOR3 accel);
+	void SetAABB(D3DXVECTOR3 minPoint, D3DXVECTOR3 maxPoint);
+	void SetAABB(D3DXVECTOR3 minPoint, D3DXVECTOR3 maxPoint, bool useCCD);
+	void SetAABB(D3DXVECTOR3 minPoint, D3DXVECTOR3 maxPoint, string ID);
+	void SetAABB(D3DXVECTOR3 minPoint, D3DXVECTOR3 maxPoint, bool useCCD, string ID);
 };
 
 	

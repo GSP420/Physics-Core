@@ -449,11 +449,6 @@ bool PhysicsCore::RayCast(D3DXVECTOR2 startPoint, D3DXVECTOR2 directionVector, l
 }
 
 
-void PhysicsCore::CollisionMaskLayers()
-{
-}
-
-
 D3DXVECTOR3 PhysicsCore::GetVelocity()
 {
   return velocity;
@@ -475,4 +470,44 @@ D3DXVECTOR3 PhysicsCore::GetAcceleration()
 void PhysicsCore::SetAcceleration(D3DXVECTOR3 Accel)
 {
   acceleration = Accel;
+}
+
+
+void PhysicsCore::SetAABB(D3DXVECTOR3 minPoint, D3DXVECTOR3 maxPoint)
+{
+	AABB aabb;
+
+	aabb.minPoint = minPoint;
+	aabb.maxPoint = maxPoint;
+}
+
+
+void PhysicsCore::SetAABB(D3DXVECTOR3 minPoint, D3DXVECTOR3 maxPoint, bool useCCD)
+{
+	AABB aabb;
+
+	aabb.minPoint = minPoint;
+	aabb.maxPoint = maxPoint;
+	aabb.useContinuousDetection = useCCD;
+}
+
+
+void PhysicsCore::SetAABB(D3DXVECTOR3 minPoint, D3DXVECTOR3 maxPoint, string ID)
+{
+	AABB aabb;
+
+	aabb.minPoint = minPoint;
+	aabb.maxPoint = maxPoint;
+	aabb.ID = ID;
+}
+
+
+void PhysicsCore::SetAABB(D3DXVECTOR3 minPoint, D3DXVECTOR3 maxPoint, bool useCCD, string ID)
+{
+	AABB aabb;
+
+	aabb.minPoint = minPoint;
+	aabb.maxPoint = maxPoint;
+	aabb.useContinuousDetection = useCCD;
+	aabb.ID = ID;
 }
