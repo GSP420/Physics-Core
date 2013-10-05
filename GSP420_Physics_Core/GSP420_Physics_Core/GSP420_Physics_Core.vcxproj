@@ -68,14 +68,12 @@
     <ClInclude Include="PhysicsCollision.h" />
     <ClInclude Include="PhysicsCore.h" />
     <ClInclude Include="PhysicsInterface.h" />
-    <ClInclude Include="PhysicsManager.h" />
     <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Octree.cpp" />
     <ClCompile Include="PhysicsCollision.cpp" />
     <ClCompile Include="PhysicsCore.cpp" />
-    <ClCompile Include="PhysicsManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="GSP420_Physics_Core.rc" />
