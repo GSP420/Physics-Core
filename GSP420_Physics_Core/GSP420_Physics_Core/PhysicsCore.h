@@ -90,6 +90,91 @@ struct AABB
 };
 
 /*************************************************************
+*struct: collisionInfo 
+*Programmer: Josh Archer
+*Purpose: to contain contact information about a collision
+*between two AABB's
+*************************************************************/
+struct collisionInfo
+{
+	collisionInfo(AABB boxA, AABB boxB, D3DXVECTOR3 pointOfImpact, float TOI)
+	{
+		//Get the ID's of our colliding boxes
+		boxA_ID = boxA.ID;
+		boxB_ID = boxB.ID;
+
+		//Get the time and points of impact
+		impactPoint = pointOfImpact;
+		timeOfImpact = TOI;
+
+		//Calculate movement vectors for each box
+		boxA_movementVector = boxA.center() - boxA.centerPointPrevious;
+		boxB_movementVector = boxB.center() - boxB.centerPointPrevious;
+	}
+
+	collisionInfo(AABB boxA, AABB boxB, D3DXVECTOR3 pointOfImpact)
+	{
+		//overloaded version of constructor without a time of impact
+		collisionInfo(boxA, boxB, pointOfImpact, -FLT_MAX);
+	}
+
+	D3DXVECTOR3 impactPoint;
+	float timeOfImpact;
+
+	string boxA_ID;
+	string boxB_ID;
+
+	D3DXVECTOR3 boxA_movementVector;
+	D3DXVECTOR3 boxB_movementVector;
+};
+
+/*************************************************************
+*struct: collisions
+*Programmer: Josh Archer
+*Purpose: Contains a list of detected collisions and functions
+*which allow the user to move through each collisionInfo
+*member of the list, retrieving information about each
+*collision
+*************************************************************/
+struct collisions
+{
+	list<collisionInfo> collisionList;
+	collisionInfo currentCollision;
+
+	//Returns the length of the collision list
+	int length()
+	{
+		if(!collisionList.empty())
+		{
+			return collisionList.size();
+		}
+		else
+		{
+			return 0;
+		}
+	}
+
+	//Gets the first member in the list, assigns the values of that member of the list to the currentCollision object, and pops that member off of the list
+	void getNext()
+	{
+		//Create an iterator and assign it to the first member of the list
+		list<collisionInfo>::iterator it = collisionList.begin();
+
+		//Transfer all the values to the corresponding values in the struct
+		currentCollision.impactPoint = it->impactPoint;
+		currentCollision.timeOfImpact = it->timeOfImpact;
+		currentCollision.boxA_ID = it->boxA_ID;
+		currentCollision.boxB_ID = it->boxB_ID;
+		currentCollision.boxA_movementVector = it->boxA_movementVector;
+		currentCollision.boxB_movementVector = it->boxB_movementVector;
+
+		//Now pop the first member off of the list
+		collisionList.pop_front();
+	}
+
+};
+
+/*************************************************************
 *struct: RayCastContact 
 *Programmer: Josh Archer
 *Purpose: to contain contact information about a collision
