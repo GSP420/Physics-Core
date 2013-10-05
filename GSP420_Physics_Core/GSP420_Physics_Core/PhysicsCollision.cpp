@@ -24,7 +24,7 @@ D3DXVECTOR3 PhysicsCollision::ObjectDistance(D3DXVECTOR3 Obj1, D3DXVECTOR3 Obj2)
 	return(dist);
 }
 
-bool PhysicsCollision::sweptCCD(AABB boxA, AABB boxB, float &timeOfImpact)
+bool PhysicsCollision::sweptCCD(vector<AABB*> boxes, Octree* octree, float &timeOfImpact)
 {
 	/******************************************************
 	*	Function Name:		sweptCCD()
@@ -39,133 +39,145 @@ bool PhysicsCollision::sweptCCD(AABB boxA, AABB boxB, float &timeOfImpact)
 	*
 	******************************************************/
 
-	//Check if box A and box B were already overlapping in their previous positions:
-	D3DXVECTOR3 AB_separation = boxA.centerPointPrevious - boxB.centerPointPrevious;
+	vector<AABBPair> bps;
 
-	if(		(fabs(AB_separation.x) <= fabs(boxA.extent().x + boxB.extent().x))
-		&&	(fabs(AB_separation.y) <= fabs(boxA.extent().y + boxB.extent().y))
-		&&	(fabs(AB_separation.z) <= fabs(boxA.extent().z + boxB.extent().z))		)
+	_octree->potentialBoxBoxCollision(bps, boxes, octree);
+	for(unsigned int i = 0; i < bps.size(); i++) 
 	{
-		//The boxes were already overlapping at their previous positions
-		timeOfImpact = 0.0f;
-		return true;
-	}
+		AABBPair bp = bps[i];
+		
+		AABB* boxA = bp.aabb1;
+		AABB* boxB = bp.aabb2;
 
-	//We know they weren't overlapping at thier previous positions, so let's set up for detecting potential times of impact 
-	
-	
-	D3DXVECTOR3 displacementA = boxA.center() - boxA.centerPointPrevious;		//Displacement of box A between previous and current positions
-	D3DXVECTOR3 displacementB = boxB.center() - boxB.centerPointPrevious;		//Displacement of box B between previous and current positions
+		//Check if box A and box B were already overlapping in their previous positions:
+		D3DXVECTOR3 AB_separation = boxA->centerPointPrevious - boxB->centerPointPrevious;
 
-	D3DXVECTOR3 relativeVelocity = displacementB - displacementA;		//Relative velocity between box A and box B
-	
-	D3DXVECTOR3 aMin = boxA.centerPointPrevious - boxA.extent();		//Previous min point of box A
-	D3DXVECTOR3 aMax = boxA.centerPointPrevious + boxA.extent();		//Previous max point of box A
-
-	D3DXVECTOR3 bMin = boxB.centerPointPrevious - boxB.extent();		//Previous min point of box B
-	D3DXVECTOR3 bMax = boxB.centerPointPrevious + boxB.extent();		//Previous max point of box B
-	
-	//First time of overlap along all axes
-	D3DXVECTOR3 t0;
-	t0.x, t0.y, t0.z = 0, 0, 0;
-	//Last time of overlap along all axes
-	D3DXVECTOR3 t1;
-	t1.x, t1.y, t1.z = 1, 1, 1;
-
-	for(int i = 0; i < 3; i++)
-	{
-		if(i = 0)
+		if(		(fabs(AB_separation.x) <= fabs(boxA->extent().x + boxB->extent().x))
+			&&	(fabs(AB_separation.y) <= fabs(boxA->extent().y + boxB->extent().y))
+			&&	(fabs(AB_separation.z) <= fabs(boxA->extent().z + boxB->extent().z))		)
 		{
-			//Test x axis
+			//The boxes were already overlapping at their previous positions
+			timeOfImpact = 0.0f;
+			return true;
+		}
 
-			//Test for earliest time of impact:
-			if(		(aMax.x < bMin.x)	&&	(relativeVelocity.x < 0)	)
-			{
-				t0.x = (aMax.x - bMin.x) / relativeVelocity.x;		//Potential time of impact, normalized
-			}
-			else if(		(bMax.x < aMin.x)	&&	(relativeVelocity.x > 0)	)
-			{
-				t0.x = (aMin.x - bMax.x) / relativeVelocity.x;		//Potential time of impact, normalized
-			}
+		//We know they weren't overlapping at thier previous positions, so let's set up for detecting potential times of impact 
+	
+	
+		D3DXVECTOR3 displacementA = boxA->center() - boxA->centerPointPrevious;		//Displacement of box A between previous and current positions
+		D3DXVECTOR3 displacementB = boxB->center() - boxB->centerPointPrevious;		//Displacement of box B between previous and current positions
 
-			//Test for last time of impact:
-			if(		(bMax.x > aMin.x)	&&	(relativeVelocity.x < 0)	)
+		D3DXVECTOR3 relativeVelocity = displacementB - displacementA;		//Relative velocity between box A and box B
+	
+		D3DXVECTOR3 aMin = boxA->centerPointPrevious - boxA->extent();		//Previous min point of box A
+		D3DXVECTOR3 aMax = boxA->centerPointPrevious + boxA->extent();		//Previous max point of box A
+
+		D3DXVECTOR3 bMin = boxB->centerPointPrevious - boxB->extent();		//Previous min point of box B
+		D3DXVECTOR3 bMax = boxB->centerPointPrevious + boxB->extent();		//Previous max point of box B
+	
+		//First time of overlap along all axes
+		D3DXVECTOR3 t0;
+		t0.x, t0.y, t0.z = 0, 0, 0;
+		//Last time of overlap along all axes
+		D3DXVECTOR3 t1;
+		t1.x, t1.y, t1.z = 1, 1, 1;
+
+		for(int i = 0; i < 3; i++)
+		{
+			if(i = 0)
 			{
-				t1.x = (aMin.x - bMax.x) / relativeVelocity.x;		//Potential time of impact, normalized
+				//Test x axis
+
+				//Test for earliest time of impact:
+				if(		(aMax.x < bMin.x)	&&	(relativeVelocity.x < 0)	)
+				{
+					t0.x = (aMax.x - bMin.x) / relativeVelocity.x;		//Potential time of impact, normalized
+				}
+				else if(		(bMax.x < aMin.x)	&&	(relativeVelocity.x > 0)	)
+				{
+					t0.x = (aMin.x - bMax.x) / relativeVelocity.x;		//Potential time of impact, normalized
+				}
+
+				//Test for last time of impact:
+				if(		(bMax.x > aMin.x)	&&	(relativeVelocity.x < 0)	)
+				{
+					t1.x = (aMin.x - bMax.x) / relativeVelocity.x;		//Potential time of impact, normalized
+				}
+				else if(		(aMax.x > bMin.x)	&&	(relativeVelocity.x > 0)		)
+				{
+					t1.x = (aMax.x - bMin.x) / relativeVelocity.x;
+				}
 			}
-			else if(		(aMax.x > bMin.x)	&&	(relativeVelocity.x > 0)		)
+			else if(i = 1)
 			{
-				t1.x = (aMax.x - bMin.x) / relativeVelocity.x;
+				//Test y axis
+
+				//Test for earliest time of impact:
+				if(		(aMax.y < bMin.y)	&&	(relativeVelocity.y < 0)	)
+				{
+					t0.y = (aMax.y - bMin.y) / relativeVelocity.y;		//Potential time of impact, normalized
+				}
+				else if(		(bMax.y < aMin.y)	&&	(relativeVelocity.y > 0)	)
+				{
+					t0.y = (aMin.y - bMax.y) / relativeVelocity.y;		//Potential time of impact, normalized
+				}
+
+				//Test for last time of impact:
+				if(		(bMax.y > aMin.y)	&&	(relativeVelocity.y < 0)	)
+				{
+					t1.y = (aMin.y - bMax.y) / relativeVelocity.y;		//Potential time of impact, normalized
+				}
+				else if(		(aMax.y > bMin.y)	&&	(relativeVelocity.y > 0)		)
+				{
+					t1.y = (aMax.y - bMin.y) / relativeVelocity.y;
+				}
+			}
+			else
+			{
+				//Test z axis
+
+				//Test for earliest time of impact:
+				if(		(aMax.z < bMin.z)	&&	(relativeVelocity.z < 0)	)
+				{
+					t0.z = (aMax.z - bMin.z) / relativeVelocity.z;		//Potential time of impact, normalized
+				}
+				else if(		(bMax.z < aMin.z)	&&	(relativeVelocity.z > 0)	)
+				{
+					t0.z = (aMin.z - bMax.z) / relativeVelocity.z;		//Potential time of impact, normalized
+				}
+
+				//Test for last time of impact:
+				if(		(bMax.z > aMin.z)	&&	(relativeVelocity.z < 0)	)
+				{
+					t1.z = (aMin.z - bMax.z) / relativeVelocity.z;		//Potential time of impact, normalized
+				}
+				else if(		(aMax.z > bMin.z)	&&	(relativeVelocity.z > 0)		)
+				{
+					t1.z = (aMax.z - bMin.z) / relativeVelocity.z;
+				}
 			}
 		}
-		else if(i = 1)
+
+		float tMin, tMax;	//Store our earliest and latest impact times (normalized)
+		//Potential time of first impact
+		tMin = max(t0.x, max(t0.y, t0.z));
+	
+		//Potential time of last impact
+		tMax = min(t1.x, min(t1.y, t1.z));
+
+		//An impact has only occurred if the time of first impact is less than or equal to the time of last impact
+		if(tMin <= tMax)
 		{
-			//Test y axis
-
-			//Test for earliest time of impact:
-			if(		(aMax.y < bMin.y)	&&	(relativeVelocity.y < 0)	)
-			{
-				t0.y = (aMax.y - bMin.y) / relativeVelocity.y;		//Potential time of impact, normalized
-			}
-			else if(		(bMax.y < aMin.y)	&&	(relativeVelocity.y > 0)	)
-			{
-				t0.y = (aMin.y - bMax.y) / relativeVelocity.y;		//Potential time of impact, normalized
-			}
-
-			//Test for last time of impact:
-			if(		(bMax.y > aMin.y)	&&	(relativeVelocity.y < 0)	)
-			{
-				t1.y = (aMin.y - bMax.y) / relativeVelocity.y;		//Potential time of impact, normalized
-			}
-			else if(		(aMax.y > bMin.y)	&&	(relativeVelocity.y > 0)		)
-			{
-				t1.y = (aMax.y - bMin.y) / relativeVelocity.y;
-			}
+			timeOfImpact = tMin;
+			return true;
 		}
 		else
 		{
-			//Test z axis
-
-			//Test for earliest time of impact:
-			if(		(aMax.z < bMin.z)	&&	(relativeVelocity.z < 0)	)
-			{
-				t0.z = (aMax.z - bMin.z) / relativeVelocity.z;		//Potential time of impact, normalized
-			}
-			else if(		(bMax.z < aMin.z)	&&	(relativeVelocity.z > 0)	)
-			{
-				t0.z = (aMin.z - bMax.z) / relativeVelocity.z;		//Potential time of impact, normalized
-			}
-
-			//Test for last time of impact:
-			if(		(bMax.z > aMin.z)	&&	(relativeVelocity.z < 0)	)
-			{
-				t1.z = (aMin.z - bMax.z) / relativeVelocity.z;		//Potential time of impact, normalized
-			}
-			else if(		(aMax.z > bMin.z)	&&	(relativeVelocity.z > 0)		)
-			{
-				t1.z = (aMax.z - bMin.z) / relativeVelocity.z;
-			}
+			timeOfImpact = -FLT_MAX;
+			return false;
 		}
 	}
-
-	float tMin, tMax;	//Store our earliest and latest impact times (normalized)
-	//Potential time of first impact
-	tMin = max(t0.x, max(t0.y, t0.z));
-	
-	//Potential time of last impact
-	tMax = min(t1.x, min(t1.y, t1.z));
-
-	//An impact has only occurred if the time of first impact is less than or equal to the time of last impact
-	if(tMin <= tMax)
-	{
-		timeOfImpact = tMin;
-		return true;
-	}
-	else
-	{
-		timeOfImpact = -FLT_MAX;
-		return false;
-	}
+	return true;
 }
 
 bool PhysicsCollision::CCD(D3DXVECTOR2 Obj1_centerPoint_current, D3DXVECTOR2 Obj1_centerPoint_future, D3DXVECTOR2 Obj1_extent, D3DXVECTOR2 Obj1_velocity,
