@@ -203,6 +203,7 @@ public:
 	static const float GRAVITY;
 	static const float FRICTION;	//friction coefficient that may need changed after testing	
 
+	vector<AABB*> boxes;
 	D3DXVECTOR3 velocity;
 	D3DXVECTOR3 acceleration;
 	collisionInfo* _collisionInfo;

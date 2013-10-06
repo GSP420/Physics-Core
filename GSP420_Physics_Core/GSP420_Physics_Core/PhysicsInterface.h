@@ -6,7 +6,6 @@
 class PhysicsInterface
 {
 public:
-	vector<AABB*> boxes;
 
 	void StartUp(int SCENE_SIZE);
 	void Update(float deltaTime);
@@ -44,13 +43,13 @@ void PhysicsInterface::Update(float dt)
 {
 	float TOI;
 	core.Accelerate(dt);
-	collide._octree->advance(boxes, collide._octree, dt, timeUntilUpdate);
+	collide._octree->advance(core.boxes, collide._octree, dt, timeUntilUpdate);
 
 	//Loop through the boxes for broad phase
-	for(int i = 0; i < boxes.size(); i++)
+	for(int i = 0; i < core.boxes.size(); i++)
 	{
 		//Broad phase collision detection
-		if(collide.CollisionDetection(boxes, collide._octree, true))
+		if(collide.CollisionDetection(core.boxes, collide._octree, true))
 		{
 			//this box collided with another box
 		}
@@ -61,13 +60,13 @@ void PhysicsInterface::Update(float dt)
 	}
 
 	//Loop through the boxes a second time for narrow phase
-	for(int i = 0; i < boxes.size(); i++)
+	for(int i = 0; i < core.boxes.size(); i++)
 	{
 		//Narrow phase collision detection
-		if(boxes[i]->useContinuousDetection)
+		if(core.boxes[i]->useContinuousDetection)
 		{
 			//box has continuous detection toggled on, so determine if we've already found a collision for it in broad phase
-			if(collide.sweptCCD(boxes, collide._octree, TOI))
+			if(collide.sweptCCD(core.boxes, collide._octree, TOI))
 			{
 				//this box collided with another box
 			}
