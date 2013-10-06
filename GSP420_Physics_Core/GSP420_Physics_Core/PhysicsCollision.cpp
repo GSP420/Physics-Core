@@ -212,6 +212,12 @@ bool PhysicsCollision::CCD(D3DXVECTOR2 Obj1_centerPoint_current, D3DXVECTOR2 Obj
 							D3DXVECTOR2 Obj2_centerPoint_current, D3DXVECTOR2 Obj2_centerPoint_future, D3DXVECTOR2 Obj2_extent,	D3DXVECTOR2 Obj2_velocity,
 							float deltaTime, float &timeOfImpact)
 {
+	/************************************************************************************
+	*																					*
+	*									DEPRECATED FUNCTION!!							*
+	*																					*
+	************************************************************************************/
+
 	struct CCD_line
 	{
 		//Start and ending points of the line
