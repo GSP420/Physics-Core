@@ -214,7 +214,7 @@ bool PhysicsCollision::CCD(D3DXVECTOR2 Obj1_centerPoint_current, D3DXVECTOR2 Obj
 {
 	/************************************************************************************
 	*																					*
-	*									DEPRECATED FUNCTION!!							*
+	*									DEPRICATED FUNCTION!!							*
 	*																					*
 	************************************************************************************/
 
