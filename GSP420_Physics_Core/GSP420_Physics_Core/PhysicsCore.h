@@ -208,6 +208,7 @@ public:
 	D3DXVECTOR3 acceleration;
 	collisionInfo* _collisionInfo;
 	collisions* _collisions;
+	RayCastContact* _rayCastContact;
 
 	PhysicsCore(void);
 	~PhysicsCore(void);
