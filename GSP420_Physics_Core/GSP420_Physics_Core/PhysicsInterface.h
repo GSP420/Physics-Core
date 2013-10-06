@@ -83,8 +83,8 @@ void PhysicsInterface::Update(float dt)
 
 void PhysicsInterface::Shutdown()
 {
-	for(unsigned int i = 0; i < boxes.size(); i++)
-		delete boxes[i];
+	for(unsigned int i = 0; i < core.boxes.size(); i++)
+		delete core.boxes[i];
 
 	 delete collide._octree;
 }
