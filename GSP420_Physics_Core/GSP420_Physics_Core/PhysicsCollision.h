@@ -1,10 +1,12 @@
 #pragma once
 #include "PhysicsCore.h"
+#include "Octree.h"
 
 class PhysicsCollision
 {
 public:
 	PhysicsCore core;
+	Octree* _octree;
 
 	PhysicsCollision(void);
 	~PhysicsCollision(void);
@@ -19,4 +21,6 @@ public:
 	bool PhysicsCollision::sweptCCD(vector<AABB*> boxes, Octree* octree, float &timeOfImpact);
 	bool CollisionDetection(vector<AABB*> &boxes, Octree* octree, bool test_z_axis);
 };
+
+
 

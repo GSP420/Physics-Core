@@ -42,9 +42,10 @@ bool PhysicsCollision::sweptCCD(vector<AABB*> boxes, Octree* octree, float &time
 	vector<AABBPair> bps;
 	bool collisionOccurred = false;
 
-	core._octree->potentialBoxBoxCollision(bps, boxes, octree);
+	_octree->potentialBoxBoxCollision(bps, boxes, octree);
 	for(unsigned int i = 0; i < bps.size(); i++) 
 	{
+		_octree->add(boxes[i]);
 		AABBPair bp = bps[i];
 		
 		AABB* boxA = bp.aabb1;
@@ -887,9 +888,10 @@ bool PhysicsCollision::CollisionDetection(vector<AABB*> &boxes, Octree* octree, 
 	vector<AABBPair> bps;
 	bool collisionOccurred = false;
 
-	core._octree->potentialBoxBoxCollision(bps, boxes, octree);
+	_octree->potentialBoxBoxCollision(bps, boxes, octree);
 	for(unsigned int i = 0; i < bps.size(); i++) 
 	{
+		_octree->add(boxes[i]);
 		AABBPair bp = bps[i];
 		
 		AABB* shapeOne = bp.aabb1;

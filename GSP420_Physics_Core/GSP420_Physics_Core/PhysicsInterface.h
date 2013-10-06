@@ -35,7 +35,7 @@ void PhysicsInterface::StartUp(int SCENE_SIZE)
 	core.acceleration = D3DXVECTOR3(0.0f, float(core.GRAVITY), 0.0f);
 	timeUntilUpdate = 0.0f;
 
-	core._octree = new Octree(D3DXVECTOR3(-SCENE_SIZE / 2, -SCENE_SIZE / 2, -SCENE_SIZE / 2),
+	collide._octree = new Octree(D3DXVECTOR3(-SCENE_SIZE / 2, -SCENE_SIZE / 2, -SCENE_SIZE / 2),
 						D3DXVECTOR3(SCENE_SIZE / 2, SCENE_SIZE / 2, SCENE_SIZE / 2),
 						0.0f);
 }
@@ -44,13 +44,13 @@ void PhysicsInterface::Update(float dt)
 {
 	float TOI;
 	core.Accelerate(dt);
-	core._octree->advance(boxes, core._octree, dt, timeUntilUpdate);
+	collide._octree->advance(boxes, collide._octree, dt, timeUntilUpdate);
 
 	//Loop through the boxes for broad phase
 	for(int i = 0; i < boxes.size(); i++)
 	{
 		//Broad phase collision detection
-		if(collide.CollisionDetection(boxes, core._octree, true))
+		if(collide.CollisionDetection(boxes, collide._octree, true))
 		{
 			//this box collided with another box
 		}
@@ -67,7 +67,7 @@ void PhysicsInterface::Update(float dt)
 		if(boxes[i]->useContinuousDetection)
 		{
 			//box has continuous detection toggled on, so determine if we've already found a collision for it in broad phase
-			if(collide.sweptCCD(boxes, core._octree, TOI))
+			if(collide.sweptCCD(boxes, collide._octree, TOI))
 			{
 				//this box collided with another box
 			}
@@ -87,7 +87,7 @@ void PhysicsInterface::Shutdown()
 	for(unsigned int i = 0; i < boxes.size(); i++)
 		delete boxes[i];
 
-	 delete core._octree;
+	 delete collide._octree;
 }
 
 bool PhysicsInterface::RayCast3D(D3DXVECTOR3 startPoint, D3DXVECTOR3 directionVector, list<AABB> collidables, int maxTestLimit, RayCastContact &contactOutput)

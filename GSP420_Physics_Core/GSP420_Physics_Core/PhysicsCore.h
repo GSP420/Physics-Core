@@ -14,7 +14,8 @@
 #include <list>
 #include <string>
 #include <cmath>
-#include "Octree.h"
+#include <set>
+#include <vector>
 
 using namespace std;
 
@@ -88,6 +89,12 @@ struct AABB
 	string ID;
 
 	bool useContinuousDetection;
+};
+
+struct AABBPair
+{
+	AABB* aabb1;
+	AABB* aabb2;
 };
 
 /*************************************************************
@@ -204,7 +211,6 @@ public:
 
 	D3DXVECTOR3 velocity;
 	D3DXVECTOR3 acceleration;
-	Octree* _octree;
 	collisionInfo* _collisionInfo;
 	collisions* _collisions;
 

@@ -479,8 +479,6 @@ void PhysicsCore::SetAABB(D3DXVECTOR3 minPoint, D3DXVECTOR3 maxPoint)
 
 	aabb->minPoint = minPoint;
 	aabb->maxPoint = maxPoint;
-
-	_octree->add(aabb);
 }
 
 
@@ -491,8 +489,6 @@ void PhysicsCore::SetAABB(D3DXVECTOR3 minPoint, D3DXVECTOR3 maxPoint, bool useCC
 	aabb->minPoint = minPoint;
 	aabb->maxPoint = maxPoint;
 	aabb->useContinuousDetection = useCCD;
-
-	_octree->add(aabb);
 }
 
 
@@ -503,8 +499,6 @@ void PhysicsCore::SetAABB(D3DXVECTOR3 minPoint, D3DXVECTOR3 maxPoint, string ID)
 	aabb->minPoint = minPoint;
 	aabb->maxPoint = maxPoint;
 	aabb->ID = ID;
-
-	_octree->add(aabb);
 }
 
 
@@ -516,6 +510,4 @@ void PhysicsCore::SetAABB(D3DXVECTOR3 minPoint, D3DXVECTOR3 maxPoint, bool useCC
 	aabb->maxPoint = maxPoint;
 	aabb->useContinuousDetection = useCCD;
 	aabb->ID = ID;
-
-	_octree->add(aabb);
 }
