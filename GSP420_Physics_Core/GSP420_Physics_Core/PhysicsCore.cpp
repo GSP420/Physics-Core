@@ -475,7 +475,7 @@ void PhysicsCore::SetAcceleration(D3DXVECTOR3 Accel)
 
 void PhysicsCore::SetAABB(D3DXVECTOR3 minPoint, D3DXVECTOR3 maxPoint)
 {
-	AABB* aabb;
+	AABB* aabb = new AABB;
 
 	aabb->minPoint = minPoint;
 	aabb->maxPoint = maxPoint;
@@ -484,7 +484,7 @@ void PhysicsCore::SetAABB(D3DXVECTOR3 minPoint, D3DXVECTOR3 maxPoint)
 
 void PhysicsCore::SetAABB(D3DXVECTOR3 minPoint, D3DXVECTOR3 maxPoint, bool useCCD)
 {
-	AABB* aabb;
+	AABB* aabb = new AABB;
 
 	aabb->minPoint = minPoint;
 	aabb->maxPoint = maxPoint;
@@ -494,7 +494,7 @@ void PhysicsCore::SetAABB(D3DXVECTOR3 minPoint, D3DXVECTOR3 maxPoint, bool useCC
 
 void PhysicsCore::SetAABB(D3DXVECTOR3 minPoint, D3DXVECTOR3 maxPoint, string ID)
 {
-	AABB* aabb;
+	AABB* aabb = new AABB;
 
 	aabb->minPoint = minPoint;
 	aabb->maxPoint = maxPoint;
@@ -504,7 +504,7 @@ void PhysicsCore::SetAABB(D3DXVECTOR3 minPoint, D3DXVECTOR3 maxPoint, string ID)
 
 void PhysicsCore::SetAABB(D3DXVECTOR3 minPoint, D3DXVECTOR3 maxPoint, bool useCCD, string ID)
 {
-	AABB* aabb;
+	AABB* aabb = new AABB;
 
 	aabb->minPoint = minPoint;
 	aabb->maxPoint = maxPoint;

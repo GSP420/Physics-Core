@@ -91,12 +91,6 @@ struct AABB
 	bool useContinuousDetection;
 };
 
-struct AABBPair
-{
-	AABB* aabb1;
-	AABB* aabb2;
-};
-
 /*************************************************************
 *struct: collisionInfo 
 *Programmer: Josh Archer
