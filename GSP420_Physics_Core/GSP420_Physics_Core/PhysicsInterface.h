@@ -2,8 +2,9 @@
 
 #include "PhysicsCore.h"
 #include "PhysicsCollision.h"
+#include "ICore.h"
 
-class PhysicsInterface
+class PhysicsInterface : public ICore
 {
 public:
 
