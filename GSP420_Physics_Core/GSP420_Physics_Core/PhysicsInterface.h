@@ -1,5 +1,49 @@
-#pragma once
+/****************************************************************************************
+Example Pseudo Code
+Main()
+{
+	PhysicsInterface physics;
+	
+	Startup()
+	{
+		physics.Startup();
+	}
 
+	Update()
+	{
+		physics.Update();
+		{
+			for(int i=0;i<physics.core._collisions->collisionList.size();i++)
+			{
+				//Pop the next collision off the stack
+				physics.core._collisions->getNext();
+
+				//Resolve collisions by accessing the following properties
+				physics.core._collisions->currentCollision.boxA_ID;
+				physics.core._collisions->currentCollision.boxB_ID;
+				physics.core._collisions->currentCollision.boxA_movementVector;
+				physics.core._collisions->currentCollision.boxB_movementVector;
+				physics.core._collisions->currentCollision.impactPoint.x;
+				physics.core._collisions->currentCollision.impactPoint.y;
+				physics.core._collisions->currentCollision.impactPoint.z;
+				physics.core._collisions->currentCollision.timeOfImpact;
+			}
+		}
+
+		//Raycast example
+		physics.RayCast3D(entity.position, entity.movementVector, physics.core.boxes, 15, 				physics.core._rayCastContact);
+
+		//Returns true if a collision is detected along the ray
+		//Assigns information about the collision to physics.core._rayCastContact struct
+	}
+
+	Shutdown()
+	{
+		physics.Shutdown();
+	}
+}
+*******************************************************************************************/
+#pragma once
 #include "PhysicsCore.h"
 #include "PhysicsCollision.h"
 #include "ICore.h"
